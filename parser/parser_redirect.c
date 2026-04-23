@@ -1,0 +1,85 @@
+#include "parser.h"
+
+int	handle_input_redirect(t_cmd *cmd, char **tokens, int *i)
+{
+	if (!tokens[*i + 1])
+	{
+		ft_putendl_fd("syntax error: expected filename after '<'", 2);
+		return (-1);
+	}
+	cmd->type_in = REDIR_IN;
+	if (cmd->infile)
+		free(cmd->infile);
+	cmd->infile = process_quotes(tokens[*i + 1]);
+	if (!cmd->infile)
+		return (-1);
+	(*i) += 2;
+	return (1);
+}
+
+int	handle_output_redirect(t_cmd *cmd, char **tokens, int *i)
+{
+	if (!tokens[*i + 1])
+	{
+		ft_putendl_fd("syntax error: expected filename after '>'", 2);
+		return (-1);
+	}
+	cmd->type_out = REDIR_OUT;
+	if (cmd->outfile)
+		free(cmd->outfile);
+	cmd->outfile = process_quotes(tokens[*i + 1]);
+	if (!cmd->outfile)
+		return (-1);
+	(*i) += 2;
+	return (1);
+}
+
+int	handle_append(t_cmd *cmd, char **tokens, int *i)
+{
+	if (!tokens[*i + 1])
+	{
+		ft_putendl_fd("syntax error: expected filename after '>>'", 2);
+		return (-1);
+	}
+	cmd->type_out = APPEND;
+	if (cmd->outfile)
+		free(cmd->outfile);
+	cmd->outfile = process_quotes(tokens[*i + 1]);
+	if (!cmd->outfile)
+		return (-1);
+	(*i) += 2;
+	return (1);
+}
+
+static void	setup_heredoc_quote(t_cmd *cmd, char *delimiter)
+{
+	int	has_quote;
+
+	has_quote = is_quote(delimiter[0]) || ft_strchr(delimiter, '"')
+		|| ft_strchr(delimiter, '\'');
+	if (has_quote)
+	{
+		cmd->delimiter = process_quotes(delimiter);
+		cmd->expand = 0;
+	}
+	else
+	{
+		cmd->delimiter = ft_strdup(delimiter);
+		cmd->expand = 1;
+	}
+}
+
+int	handle_heredoc(t_cmd *cmd, char **tokens, int *i)
+{
+	if (!tokens[*i + 1])
+	{
+		ft_putendl_fd("syntax error: expected delimiter after '<<'", 2);
+		return (-1);
+	}
+	cmd->type_in = HEREDOC;
+	setup_heredoc_quote(cmd, tokens[*i + 1]);
+	if (!cmd->delimiter)
+		return (-1);
+	(*i) += 2;
+	return (1);
+}
