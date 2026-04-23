@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                           :::      ::::::: */
+/*   expander.c                                            :+:      :+:    :+ */
+/*                                                       +:+ +:+         +:+  */
+/*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
+/*                                                   +#+#+#+#+#+   +#+        */
+/*   Created: 2026/04/23 12:47:15 by yagunduz             #+#    #+#          */
+/*   Updated: 2026/04/23 12:47:18 by yagunduz            ###   ########.tr    */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser.h"
 
 static void	init_expand_ctx(t_expand_ctx *ctx, char *s, t_list *e, int code)
