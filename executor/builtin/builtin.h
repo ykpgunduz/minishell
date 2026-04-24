@@ -13,7 +13,7 @@
 #ifndef BUILTIN_H
 # define BUILTIN_H
 
-# include "../mini.h"
+# include "../includes/mini.h"
 
 typedef struct s_cmd	t_cmd;
 typedef struct s_code	t_code;

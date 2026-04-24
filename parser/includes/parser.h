@@ -13,7 +13,7 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "../execute/mini.h"
+# include "mini.h"
 
 typedef struct s_token
 {

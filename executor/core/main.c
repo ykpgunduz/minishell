@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../parser/parser.h"
+#include "parser.h"
 #include "mini.h"
 
 static void	for_contents(char **envp, t_env *cont)
