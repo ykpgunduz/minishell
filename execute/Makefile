@@ -2,8 +2,6 @@ NAME        = minishell
 CC          = cc
 CFLAGS      = -Wall -Wextra -Werror
 
-# Readline kütüphanesini buraya ekliyoruz
-# Okuldaysan bazen -L/usr/local/lib eklemek gerekebilir
 READLINE_INC = -I/usr/local/include
 LDFLAGS      = -lreadline 
 
