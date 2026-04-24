@@ -55,7 +55,7 @@ BUILTIN_SRCS = executor/builtin/the.c \
                executor/builtin/pwd_env.c \
                executor/builtin/cd.c \
                executor/builtin/export.c \
-               executor/builtin/export2.c \
+               executor/builtin/export_utils.c \
                executor/builtin/unset.c \
                executor/builtin/exit.c
 
@@ -72,8 +72,8 @@ PARSER_SRCS  = parser/core/parser.c \
 
 EXEC_SRCS    = executor/core/main.c \
                executor/core/exec.c \
-               executor/core/exec2.c \
-               executor/core/exec3.c \
+               executor/core/exec_pipe.c \
+               executor/core/exec_utils.c \
                executor/core/heredoc.c \
                executor/utils/path.c \
                executor/utils/path_utils.c \
