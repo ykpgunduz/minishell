@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   unset.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:07:30 by zkarali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:07:31 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   unset.c                                              :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/04/09 09:44:36 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/15 13:02:48 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ void	del_node(t_list *node)
 
 	cont = (t_env *)node->content;
 	free(cont->key);
-	free(cont->value);
+	if (cont->value)
+		free(cont->value);
 	free(cont);
 	free(node);
 }
@@ -34,7 +35,7 @@ static void	for_remove(t_list *tmp, t_cmd *cmd, t_list **envp, int i)
 		cont = (t_env *)tmp->content;
 		if (ft_strcmp(cont->key, cmd->args[i]) == 0)
 		{
-			if (node == NULL) //ilk node
+			if (node == NULL)
 				*envp = tmp->next;
 			else
 				node->next = tmp->next;
@@ -46,22 +47,41 @@ static void	for_remove(t_list *tmp, t_cmd *cmd, t_list **envp, int i)
 	}
 }
 
-void	for_unset(t_cmd *cmd, t_list **envp)
+static int	unset_check(char *c)
+{
+	int	i;
+
+	i = 0;
+	if (!c || ft_isdigit(c[0]) || c[0] == '=')
+		return (0);
+	while (c[i])
+	{
+		if (!ft_isalnum(c[i]) && c[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+void	for_unset(t_cmd *cmd, t_list **envp, t_ms *data)
 {
 	int		i;
 	t_list	*tmp;
 
 	i = 1;
+	data->exit_num = 0;
 	while (cmd->args[i])
 	{
-		if (ft_strchr(cmd->args[i], '=')) //exit status 1, sinyallerle olan
+		if (ft_strchr(cmd->args[i], '=') || !unset_check(cmd->args[i]))
 		{
-			write(2, "not a valid identifier\n", 23);
-			i++;
-			continue ;
+			for_err("unset", cmd->args[i], "not a valid identifier");
+			data->exit_num = 1;
 		}
-		tmp = *envp;
-		for_remove(tmp, cmd, envp, i);
+		else
+		{
+			tmp = *envp;
+			for_remove(tmp, cmd, envp, i);
+		}
 		i++;
 	}
 }

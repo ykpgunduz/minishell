@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec3.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:53:14 by zkarali           #+#    #+#             */
-/*   Updated: 2026/04/07 14:34:20 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   exec3.c                                              :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/04/05 12:24:33 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/20 20:33:30 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,48 +36,50 @@ static char	**for_exec_envp(t_list *envp)
 	return (ar);
 }
 
-static void	for_msg_vb(t_cmd *cmd, t_list **envp, char *line, t_list *cmds)
+static void	for_msg_etc(t_cmd *cmd, t_ms *data)
 {
-	ft_putstr_fd(cmd->args[0], 2);
-	ft_putendl_fd(": command not found", 2);
-	for_free(*envp, line, cmds);
+	for_err(cmd->args[0], NULL, "command not found");
+	data->exit_num = 127;
+	for_free(data);
 	exit(127);
 }
 
-void	for_path(t_list *cmds, t_cmd *cmd, t_list **envp, char *line)
+void	for_path(t_cmd *cmd, t_ms *data)
 {
 	char	*path;
 	char	**env;
 
-	if (is_builtin(cmd))
-	{
-		builtin_execute(cmd, envp, line, cmds);
-		for_free(*envp, line, cmds);
-		exit(0);
-	}
-	path = fir_check(cmd->args, *envp, line, cmds);
+	before_path(cmd, data);
+	path = fir_check(cmd->args, data);
 	if (path == NULL)
 	{
-		path = check_path(cmd->args[0], *envp, line, cmds);
+		path = check_path(cmd->args[0], data);
 		if (!path || !*path)
-			for_msg_vb(cmd, envp, line, cmds);
+			for_msg_etc(cmd, data);
 	}
-	env = for_exec_envp(*envp);
+	env = for_exec_envp(*(data->envp));
 	execve(path, cmd->args, env);
-	perror("Minishell");
-	for_free(*envp, line, cmds);
-	free_s(env, 1);
+	if (errno == ENOEXEC)
+		for_enoexec(cmd, path, env, data);
+	else if (errno == EACCES)
+		data->exit_num = 126;
+	else
+		data->exit_num = 1;
+	for_err(cmd->args[0], NULL, strerror(errno));
+	for_free(data);
+	free_s(env);
+	exit(data->exit_num);
 }
 
-int	for_infile(t_cmd *cmd)
+int	for_infile(t_cmd *cmd, t_ms *data)
 {
 	if (cmd->type_in == HEREDOC)
-		return (cmd->heredoc_fd);
+		return (for_heredoc(cmd, *(data->envp), data));
 	else if (cmd->type_in == REDIR_IN)
 	{
 		if (!cmd->infile)
 			return (-2);
-		return (open(cmd->infile, O_RDONLY, 0644));//başarısızsa -1
+		return (open(cmd->infile, O_RDONLY, 0644));
 	}
 	return (-2);
 }

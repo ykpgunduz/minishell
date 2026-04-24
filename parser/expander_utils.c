@@ -5,8 +5,8 @@
 /*                                                       +:+ +:+         +:+  */
 /*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
 /*                                                   +#+#+#+#+#+   +#+        */
-/*   Created: 2026/04/23 12:47:02 by yagunduz             #+#    #+#          */
-/*   Updated: 2026/04/23 12:47:05 by yagunduz            ###   ########.tr    */
+/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
+/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,23 @@ char	*expand_part(char *left, char *mid, char *right)
 	return (res);
 }
 
-char	*expand_exit_status(char *str, int last_exit_code)
+static char	*finish_expansion(char *left, char *ex, char *str, t_ms *data)
 {
-	char	*result;
+	char	*res;
+	char	*find;
+
+	find = ft_strchr(str, '$');
+	res = expand_part(left, ex, ft_strdup(find + 2));
+	free(left);
+	free(ex);
+	free(str);
+	if (ft_strchr(res, '$'))
+		return (expand_variables_with_exit(res, data));
+	return (res);
+}
+
+char	*expand_exit_status(char *str, t_ms *data)
+{
 	char	*left;
 	char	*exit_str;
 	char	*find;
@@ -68,17 +82,14 @@ char	*expand_exit_status(char *str, int last_exit_code)
 	left = ft_substr(str, 0, find - str);
 	if (!left)
 		return (str);
-	exit_str = ft_itoa(last_exit_code);
+	if (data)
+		exit_str = ft_itoa(data->exit_num);
+	else
+		exit_str = ft_itoa(0);
 	if (!exit_str)
 	{
 		free(left);
 		return (str);
 	}
-	result = expand_part(left, exit_str, ft_strdup(find + 2));
-	free(left);
-	free(exit_str);
-	free(str);
-	if (ft_strchr(result, '$'))
-		return (expand_variables_with_exit(result, NULL, last_exit_code));
-	return (result);
+	return (finish_expansion(left, exit_str, str, data));
 }

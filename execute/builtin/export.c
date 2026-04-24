@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:07:12 by zkarali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:07:13 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   export.c                                             :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/04/01 16:25:48 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/20 11:02:30 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void	if_null(t_list **envp)
 		printf("declare -x %s\n", t_tmp[i]);
 		i++;
 	}
-	free_s(t_tmp, 2);
+	free_s(t_tmp);
 }
 
 static void	extra(t_list **envp, char *s, char *key, char *val)
@@ -93,7 +93,7 @@ static void	for_s(char *c, t_list **envp, char *s)
 	extra(envp, s, key, val);
 }
 
-void	for_export(t_cmd *cmd, t_list **envp)
+void	for_export(t_cmd *cmd, t_list **envp, t_ms *data)
 {
 	char	*s;
 	int		i;
@@ -106,13 +106,14 @@ void	for_export(t_cmd *cmd, t_list **envp)
 	i = 1;
 	while (cmd->args[i])
 	{
-		if (!check(cmd->args[i]))
+		if (!check(cmd->args[i], data))
 		{
 			i++;
 			continue ;
 		}
 		s = ft_strchr(cmd->args[i], '=');
 		for_s(cmd->args[i], envp, s);
+		data->exit_num = 0;
 		i++;
 	}
 }

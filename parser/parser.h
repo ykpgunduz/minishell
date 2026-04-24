@@ -5,8 +5,8 @@
 /*                                                       +:+ +:+         +:+  */
 /*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
 /*                                                   +#+#+#+#+#+   +#+        */
-/*   Created: 2026/04/23 12:48:24 by yagunduz             #+#    #+#          */
-/*   Updated: 2026/04/23 12:48:26 by yagunduz            ###   ########.tr    */
+/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
+/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ typedef struct s_token
 {
 	char	*value;
 	int		type;
-}	t_token;
+}			t_token;
 
 typedef enum e_token_type
 {
@@ -30,7 +30,7 @@ typedef enum e_token_type
 	TOKEN_APPEND,
 	TOKEN_HEREDOC,
 	TOKEN_EOF
-}	t_token_type;
+}			t_token_type;
 
 typedef struct s_lex_state
 {
@@ -39,60 +39,61 @@ typedef struct s_lex_state
 	char	quote_char;
 	int		token_count;
 	char	*input;
-}	t_lex_state;
+}			t_lex_state;
 
 typedef struct s_expand_ctx
 {
 	char	*str;
-	t_list	*envp;
-	int		last_exit_code;
+	t_ms	*data;
 	char	name[256];
 	char	*left;
 	char	*mid;
 	char	*value;
 	char	*result;
-}	t_expand_ctx;
+}			t_expand_ctx;
 
-t_list	*parse_input(char *input);
-t_list	*parse_input_with_env(char *input, t_list *envp);
-t_list	*parse_input_with_exit(char *input, t_list *envp, int exit_code);
+t_list		*parse_input(char *input);
+t_list		*parse_input_with_env(char *input, t_list *envp);
+t_list		*parse_input_with_exit(char *input, t_ms *data);
 
-char	**tokenize(char *input);
-void	free_tokens(char **tokens);
+char		**tokenize(char *input);
+void		free_tokens(char **tokens);
 
-int		is_quote(char c);
-int		is_quote_closed(char *token);
-void	skip_spaces(t_lex_state *state);
-void	advance_quote_state(t_lex_state *state);
-int		is_redirect(char *token);
-int		is_pipe(char *token);
-int		validate_syntax(char **tokens);
+int			is_quote(char c);
+int			is_quote_closed(char *token);
+void		skip_spaces(t_lex_state *state);
+void		advance_quote_state(t_lex_state *state);
+int			is_redirect(char *token);
+int			is_pipe(char *token);
+int			validate_syntax(char **tokens);
 
-char	*process_quotes(char *token);
-char	*process_quotes_with_env(char *token, t_list *envp, int exit_code);
-char	*expand_variables(char *token, t_list *envp);
-char	*expand_variables_with_exit(char *token, t_list *envp, int exit_code);
+char		*process_quotes(char *token);
+char		*process_quotes_with_env(char *token, t_ms *data);
+char		*expand_variables(char *token, t_list *envp);
+char		*expand_variables_with_exit(char *token, t_ms *data);
 
-t_cmd	*create_cmd(void);
-int		add_command_arg(t_cmd *cmd, char *arg, int *count);
+t_cmd		*create_cmd(void);
+int			add_command_arg(t_cmd *cmd, char *arg, int *count, t_ms *data);
 
-int		dispatch_redirect(t_cmd *cmd, char **tokens, int *i);
-int		handle_input_redirect(t_cmd *cmd, char **tokens, int *i);
-int		handle_output_redirect(t_cmd *cmd, char **tokens, int *i);
-int		handle_append(t_cmd *cmd, char **tokens, int *i);
-int		handle_heredoc(t_cmd *cmd, char **tokens, int *i);
+int			dispatch_redirect(t_cmd *cmd, char **tokens, int *i, t_ms *data);
+int			handle_input_redirect(t_cmd *cmd, char **tokens, int *i,
+				t_ms *data);
+int			handle_output_redirect(t_cmd *cmd, char **tokens, int *i,
+				t_ms *data);
+int			handle_append(t_cmd *cmd, char **tokens, int *i, t_ms *data);
+int			handle_heredoc(t_cmd *cmd, char **tokens, int *i, t_ms *data);
 
-int		ft_isspace(char c);
-int		is_escaped(char *input, int pos);
-void	init_lex_state(t_lex_state *state, char *input);
+int			ft_isspace(char c);
+int			is_escaped(char *input, int pos);
+void		init_lex_state(t_lex_state *state, char *input);
 
-char	*get_env_value(char *key, t_list *envp);
-int		extract_var_name(char *start, char *name);
-char	*expand_part(char *left, char *mid, char *right);
-char	*expand_exit_status(char *str, int last_exit_code);
+char		*get_env_value(char *key, t_list *envp);
+int			extract_var_name(char *start, char *name);
+char		*expand_part(char *left, char *mid, char *right);
+char		*expand_exit_status(char *str, t_ms *data);
 
-int		count_real_len(char *token);
-int		needs_expansion(char *token);
-char	*remove_quotes(char *token);
+int			count_real_len(char *token);
+int			needs_expansion(char *token);
+char		*remove_quotes(char *token);
 
 #endif

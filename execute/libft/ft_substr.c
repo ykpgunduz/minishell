@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/11 13:47:46 by zkarali           #+#    #+#             */
-/*   Updated: 2025/06/27 15:20:13 by zkarali          ###   ########.fr       */
+/*                                                         :::      ::::::::  */
+/*   ft_substr.c                                         :+:      :+:    :+:  */
+/*                                                     +:+ +:+         +:+    */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr> +#+  +:+       +#+       */
+/*                                                 +#+#+#+#+#+   +#+          */
+/*   Created: 2025/06/11 13:47:46 by zkarali            #+#    #+#            */
+/*   Updated: 2025/06/27 15:20:13 by zkarali           ###   ########.fr      */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	size_t		i;
-	size_t		s_len;
-	char		*str;
+	size_t	i;
+	size_t	s_len;
+	char	*str;
 
 	if (!s)
 		return (NULL);

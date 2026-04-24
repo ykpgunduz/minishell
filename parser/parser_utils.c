@@ -5,8 +5,8 @@
 /*                                                       +:+ +:+         +:+  */
 /*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
 /*                                                   +#+#+#+#+#+   +#+        */
-/*   Created: 2026/04/23 12:48:10 by yagunduz             #+#    #+#          */
-/*   Updated: 2026/04/23 12:48:12 by yagunduz            ###   ########.tr    */
+/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
+/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,13 @@ void	free_tokens(char **tokens)
 
 t_list	*parse_input(char *input)
 {
-	return (parse_input_with_exit(input, NULL, 0));
+	return (parse_input_with_exit(input, NULL));
 }
 
 t_list	*parse_input_with_env(char *input, t_list *envp)
 {
-	return (parse_input_with_exit(input, envp, 0));
+	(void)envp;
+	return (parse_input_with_exit(input, NULL));
 }
 
 t_cmd	*create_cmd(void)
@@ -54,11 +55,11 @@ t_cmd	*create_cmd(void)
 	return (cmd);
 }
 
-int	add_command_arg(t_cmd *cmd, char *arg, int *count)
+int	add_command_arg(t_cmd *cmd, char *arg, int *count, t_ms *data)
 {
 	char	*processed;
 
-	processed = process_quotes(arg);
+	processed = process_quotes_with_env(arg, data);
 	if (!processed)
 		return (-1);
 	cmd->args[*count] = processed;

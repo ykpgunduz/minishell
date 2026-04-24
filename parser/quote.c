@@ -5,8 +5,8 @@
 /*                                                       +:+ +:+         +:+  */
 /*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
 /*                                                   +#+#+#+#+#+   +#+        */
-/*   Created: 2026/04/23 12:48:40 by yagunduz             #+#    #+#          */
-/*   Updated: 2026/04/23 12:48:42 by yagunduz            ###   ########.tr    */
+/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
+/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ static void	handle_quote_removal(char *token, char *result)
 	j = 0;
 	while (token[i])
 	{
-		if (token[i] == '\\' && token[i + 1]
-			&& (token[i + 1] == '"' || token[i + 1] == '\''))
+		if (token[i] == '\\' && token[i + 1] && (token[i + 1] == '"'
+				|| token[i + 1] == '\''))
 		{
 			result[j++] = token[i + 1];
 			i += 2;
@@ -48,10 +48,10 @@ char	*remove_quotes(char *token)
 
 char	*process_quotes(char *token)
 {
-	return (process_quotes_with_env(token, NULL, 0));
+	return (process_quotes_with_env(token, NULL));
 }
 
-char	*process_quotes_with_env(char *token, t_list *envp, int last_exit_code)
+char	*process_quotes_with_env(char *token, t_ms *data)
 {
 	char	*removed;
 	char	*expanded;
@@ -68,7 +68,7 @@ char	*process_quotes_with_env(char *token, t_list *envp, int last_exit_code)
 		return (NULL);
 	if (needs_expansion(token))
 	{
-		expanded = expand_variables_with_exit(removed, envp, last_exit_code);
+		expanded = expand_variables_with_exit(removed, data);
 		free(removed);
 		return (expanded);
 	}

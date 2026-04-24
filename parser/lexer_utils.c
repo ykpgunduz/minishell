@@ -5,8 +5,8 @@
 /*                                                       +:+ +:+         +:+  */
 /*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
 /*                                                   +#+#+#+#+#+   +#+        */
-/*   Created: 2026/04/23 12:47:22 by yagunduz             #+#    #+#          */
-/*   Updated: 2026/04/23 12:47:25 by yagunduz            ###   ########.tr    */
+/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
+/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	advance_quote_state(t_lex_state *state)
 	char	c;
 
 	c = state->input[state->pos];
-	if ((c == '"' || c == '\'') && !state->in_quote
-		&& !is_escaped(state->input, state->pos))
+	if ((c == '"' || c == '\'') && !state->in_quote && !is_escaped(state->input,
+			state->pos))
 	{
 		state->in_quote = 1;
 		state->quote_char = c;
@@ -36,8 +36,8 @@ void	advance_quote_state(t_lex_state *state)
 
 int	ft_isspace(char c)
 {
-	return (c == ' ' || c == '\t' || c == '\n'
-		|| c == '\v' || c == '\f' || c == '\r');
+	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
+		|| c == '\r');
 }
 
 int	is_escaped(char *input, int pos)

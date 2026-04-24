@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:07:03 by zkarali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:07:04 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   echo.c                                               :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/04/04 03:06:29 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/19 03:16:18 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	check_nl(char *arg)
 	return (i > 1);
 }
 
-void	for_echo(t_cmd *cmd)
+void	for_echo(t_cmd *cmd, t_ms *data)
 {
 	int	i;
 	int	for_nl;
@@ -50,4 +50,5 @@ void	for_echo(t_cmd *cmd)
 	}
 	if (for_nl == 0)
 		write(1, "\n", 1);
+	data->exit_num = 0;
 }

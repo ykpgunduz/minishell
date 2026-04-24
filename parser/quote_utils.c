@@ -5,8 +5,8 @@
 /*                                                       +:+ +:+         +:+  */
 /*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
 /*                                                   +#+#+#+#+#+   +#+        */
-/*   Created: 2026/04/23 12:48:30 by yagunduz             #+#    #+#          */
-/*   Updated: 2026/04/23 12:48:33 by yagunduz            ###   ########.tr    */
+/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
+/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ int	count_real_len(char *token)
 	len = 0;
 	while (token[i])
 	{
-		if (token[i] == '\\' && token[i + 1]
-			&& (token[i + 1] == '"' || token[i + 1] == '\''))
+		if (token[i] == '\\' && token[i + 1] && (token[i + 1] == '"'
+				|| token[i + 1] == '\''))
 		{
 			i += 2;
 			len++;

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   the.c                                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:07:25 by zkarali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:07:26 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   the.c                                                :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/04/06 23:32:17 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/12 21:21:43 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-void	builtin_execute(t_cmd *cmd, t_list **envp, char *line, t_list *cmds)
+void	builtin_execute(t_cmd *cmd, t_ms *data)
 {
 	char	*c;
 
@@ -20,19 +20,19 @@ void	builtin_execute(t_cmd *cmd, t_list **envp, char *line, t_list *cmds)
 	if (!c)
 		return ;
 	else if (ft_strncmp(c, "pwd", 4) == 0)
-		for_pwd();
+		for_pwd(data);
 	else if (ft_strncmp(c, "env", 4) == 0)
-		for_env(*envp);
+		for_env(data->envp, data);
 	else if (ft_strncmp(c, "echo", 5) == 0)
-		for_echo(cmd);
+		for_echo(cmd, data);
 	else if (ft_strncmp(c, "cd", 3) == 0)
-		for_cd(cmd->args[1], envp);
+		for_cd(cmd->args[1], data->envp, data);
 	else if (ft_strncmp(c, "export", 7) == 0)
-		for_export(cmd, envp);
+		for_export(cmd, data->envp, data);
 	else if (ft_strncmp(c, "unset", 6) == 0)
-		for_unset(cmd, envp);
+		for_unset(cmd, data->envp, data);
 	else if (ft_strncmp(c, "exit", 5) == 0)
-		for_exit(cmd, envp, line, cmds);
+		for_exit(cmd, data);
 }
 
 int	is_builtin(t_cmd *cmd)

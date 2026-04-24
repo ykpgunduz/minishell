@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:07:07 by zkarali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:07:08 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   exit.c                                               :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/03/31 04:43:28 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/18 19:41:39 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,36 +50,29 @@ static int	ft_atoll(const char *nptr, long long *num)
 	return (*num = result * sign, 1);
 }
 
-void	for_free(t_list *enp, char *line, t_list *cmds)
-{
-	ft_lstclear(&enp, for_cont_free);
-	ft_lstclear(&cmds, free_cmd_content);
-	if (line)
-		free(line);
-	rl_clear_history();
-}
-
-void	for_exit(t_cmd *cmd, t_list **envp, char *line, t_list *cmds)
+void	for_exit(t_cmd *cmd, t_ms *data)
 {
 	long long	i;
 
 	write(1, "exit\n", 5);
-	if (!cmd->args[1]) //bu son komuta göre olacak, sinyallerle fln olan şey
+	if (!cmd->args[1])
 	{
-		for_free(*envp, line, cmds);
-		exit(0);
+		i = data->exit_num;
+		for_free(data);
+		exit((unsigned char)i);
 	}
 	if (!ft_atoll(cmd->args[1], &i))
 	{
-		write(2, "numeric argument required\n", 26);
-		for_free(*envp, line, cmds);
+		for_err("exit", cmd->args[1], "numeric argument required");
+		for_free(data);
 		exit(255);
 	}
 	if (cmd->args[2] != NULL)
 	{
-		write(2, "too many arguments\n", 19);
+		for_err("exit", NULL, "too many arguments");
+		data->exit_num = 1;
 		return ;
 	}
-	for_free(*envp, line, cmds);
+	for_free(data);
 	exit((unsigned char)i);
 }

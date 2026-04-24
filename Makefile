@@ -15,7 +15,7 @@ BUILTIN_LIB  = $(BUILTIN_PATH)/builtin.a
 PARSER_PATH = ./parser
 PARSER_LIB  = $(PARSER_PATH)/parser.a
 
-EXEC_SRCS   = execute/main.c execute/exec.c execute/exec2.c execute/exec3.c execute/path.c execute/heredoc.c execute/utils.c
+EXEC_SRCS   = execute/main.c execute/exec.c execute/exec2.c execute/exec3.c execute/path.c execute/path_utils.c execute/heredoc.c execute/utils.c execute/signal.c execute/free.c
 EXEC_OBJS   = $(EXEC_SRCS:.c=.o)
 
 INCLUDES    = -I./execute -I./execute/includes -I$(LIBFT_PATH) -I$(BUILTIN_PATH) -I./parser $(READLINE_INC)

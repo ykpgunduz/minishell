@@ -1,26 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:06:45 by zkarali           #+#    #+#             */
-/*   Updated: 2026/04/07 14:36:31 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   exec.c                                               :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/03/28 18:06:45 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/18 19:51:28 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
+#include "builtin/builtin.h"
 
-void	for_read(t_cmd *cmd, int prev_fd)
+void	for_read(t_cmd *cmd, int prev_fd, t_ms *data)
 {
 	int	read;
 
-	read = for_infile(cmd);
+	read = for_infile(cmd, data);
 	if (read == -1)
 	{
-		perror(cmd->infile);
+		for_err(cmd->infile, NULL, strerror(errno));
+		data->exit_num = 1;
 		exit(1);
+	}
+	else if (read == -3)
+	{
+		for_free(data);
+		exit(130);
 	}
 	else if (read > 0)
 	{
@@ -34,13 +41,11 @@ void	for_read(t_cmd *cmd, int prev_fd)
 	}
 }
 
-static int	for_pipes_exit(pid_t p)
+static void	for_pipes_exit(pid_t p, t_ms *data)
 {
-	int		last_s;
 	int		status;
 	pid_t	cur;
 
-	last_s = 0;
 	while (1)
 	{
 		cur = wait(&status);
@@ -49,15 +54,20 @@ static int	for_pipes_exit(pid_t p)
 		if (cur == p)
 		{
 			if (WIFEXITED(status))
-				last_s = WEXITSTATUS(status);
+				data->exit_num = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
-				last_s = 128 + WTERMSIG(status); //sinyaller bittiyse ctrl c
+			{
+				data->exit_num = 128 + WTERMSIG(status);
+				if (WTERMSIG(status) == SIGQUIT)
+					write(2, "Quit (core dumped)\n", 19);
+				else if (WTERMSIG(status) == SIGINT)
+					write(2, "\n", 1);
+			}
 		}
 	}
-	return (last_s); //$? için kullanılacak
 }
 
-static void	for_env_builtin(t_cmd *cmd, t_list **envp, char *line, t_list *cmds)
+static void	for_env_builtin(t_cmd *cmd, t_ms *data)
 {
 	int	fd;
 	int	out_fd;
@@ -67,33 +77,39 @@ static void	for_env_builtin(t_cmd *cmd, t_list **envp, char *line, t_list *cmds)
 	if (out_fd == -1)
 	{
 		close(fd);
-		return (perror("outfile"));
+		for_err(cmd->outfile, NULL, strerror(errno));
+		data->exit_num = 1;
+		return ;
 	}
 	dup2(out_fd, STDOUT_FILENO);
-	builtin_execute(cmd, envp, line, cmds);
+	builtin_execute(cmd, data);
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
 	if (out_fd > 1)
 		close(out_fd);
 }
 
-void	for_execute(t_list *cmds, t_list **envp, char *line)
+void	for_execute(t_ms *data)
 {
 	int		i;
 	pid_t	pid;
 	t_cmd	*cmd;
 	t_list	*tmp;
 
-	i = ft_lstsize(cmds);
-	cmd = (t_cmd *)cmds->content;
+	i = ft_lstsize(data->cmds);
+	cmd = (t_cmd *)data->cmds->content;
 	if (i == 1 && is_env_builtin(cmd))
 	{
-		for_env_builtin(cmd, envp, line, cmds);
+		for_env_builtin(cmd, data);
 		return ;
 	}
-	tmp = cmds;
-	pid = pipe_loop(cmds, envp, line, tmp);
+	tmp = data->cmds;
+	pid = pipe_loop(data, tmp);
 	if (pid == -2)
+	{
+		for_err("pipe", NULL, strerror(errno));
+		data->exit_num = 1;
 		return ;
-	for_pipes_exit(pid);//returnu sinyal alacak
+	}
+	for_pipes_exit(pid, data);
 }

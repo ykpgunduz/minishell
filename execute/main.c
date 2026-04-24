@@ -1,135 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:06:36 by zkarali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:01:00 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   main.c                                               :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/04/01 17:36:32 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/18 06:46:30 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../parser/parser.h"
 #include "mini.h"
-
-static void handle_redirections(t_cmd *cmd, char **tokens, int *i)//parser
-{
-    if (ft_strncmp(tokens[*i], "<", 1) == 0 && ft_strlen(tokens[*i]) == 1)
-    {
-        if (!tokens[*i + 1])
-        {
-            ft_putendl_fd("syntax error near unexpected token `newline'", 2);
-            return ;
-        }
-        cmd->type_in = REDIR_IN;
-        if (cmd->infile)
-            free(cmd->infile);
-        cmd->infile = ft_strdup(tokens[++(*i)]);
-    }
-    else if (ft_strncmp(tokens[*i], "<<", 2) == 0 && ft_strlen(tokens[*i]) == 2)
-    {
-        if (!tokens[*i + 1])
-        {
-            ft_putendl_fd("syntax error near unexpected token `newline'", 2);
-            return ;
-        }
-        cmd->type_in = HEREDOC;
-        if (cmd->delimiter)
-            free(cmd->delimiter);
-        cmd->delimiter = ft_strdup(tokens[++(*i)]);
-        cmd->expand = 1;
-    }
-    else if (ft_strncmp(tokens[*i], ">", 1) == 0 && ft_strlen(tokens[*i]) == 1)
-    {
-        if (!tokens[*i + 1])
-        {
-            ft_putendl_fd("syntax error near unexpected token `newline'", 2);
-            return ;
-        }
-        cmd->type_out = REDIR_OUT;
-        if (cmd->outfile)
-            free(cmd->outfile);
-        cmd->outfile = ft_strdup(tokens[++(*i)]);
-    }
-    else if (ft_strncmp(tokens[*i], ">>", 2) == 0 && ft_strlen(tokens[*i]) == 2)
-    {
-        if (!tokens[*i + 1])
-        {
-            ft_putendl_fd("syntax error near unexpected token `newline'", 2);
-            return ;
-        }
-        cmd->type_out = APPEND;
-        if (cmd->outfile)
-            free(cmd->outfile);
-        cmd->outfile = ft_strdup(tokens[++(*i)]);
-    }
-}
-
-static t_list *mock_parser(char *line)//parser
-{
-    t_list  *cmd_list = NULL;
-    t_cmd   *new_cmd;
-    char    **tokens;
-    int     i;
-    int     j;
-
-    tokens = ft_split(line, ' '); // strtok yerine 42 usulü split
-    i = 0;
-    while (tokens[i])
-    {
-        new_cmd = malloc(sizeof(t_cmd));
-        ft_memset(new_cmd, 0, sizeof(t_cmd)); // Önemli: Her şeyi NULL/0 yap
-        new_cmd->args = malloc(sizeof(char *) * 64);
-        
-        j = 0;
-        while (tokens[i] && ft_strcmp(tokens[i], "|") != 0)
-        {
-            if (ft_strcmp(tokens[i], "<") == 0 || ft_strcmp(tokens[i], "<<") == 0 ||
-                ft_strcmp(tokens[i], ">") == 0 || ft_strcmp(tokens[i], ">>") == 0)
-			{
-                handle_redirections(new_cmd, tokens, &i);
-			}
-            else
-			{
-                new_cmd->args[j++] = ft_strdup(tokens[i]);
-			}
-			i++;
-        }
-        new_cmd->args[j] = NULL;
-        ft_lstadd_back(&cmd_list, ft_lstnew(new_cmd));
-        if (tokens[i] && ft_strcmp(tokens[i], "|") == 0) i++;
-    }
-    free_s(tokens, 2);
-    return (cmd_list);
-}
-
-void	free_cmd_content(void *content)
-{
-	t_cmd	*cmd;
-	int		i;
-
-	cmd = (t_cmd *)content;
-	if (!cmd)
-		return ;
-	i = 0;
-	if (cmd->args)
-	{
-		while (cmd->args[i])
-			free(cmd->args[i++]);
-		free(cmd->args);
-	}
-	if (cmd->infile)
-		free(cmd->infile);
-	if (cmd->outfile)
-		free(cmd->outfile);
-	if (cmd->delimiter)
-		free(cmd->delimiter);
-	free(cmd);
-}
 
 static void	for_contents(char **envp, t_env *cont)
 {
-	char *s;
+	char	*s;
 
 	s = ft_strchr(*envp, '=');
 	if (s)
@@ -144,69 +30,78 @@ static void	for_contents(char **envp, t_env *cont)
 	}
 }
 
-static t_list	*for_the_env(char **envp)
+static t_list	*for_the_env(char **enp)
 {
-	t_list	*enp;
+	t_list	*envp;
 	t_env	*cont;
 
-	enp = NULL;
-	while (*envp)
+	envp = NULL;
+	while (*enp)
 	{
 		cont = malloc(sizeof(t_env));
 		if (!cont)
-			return (NULL);// freeleri fln
-		if (ft_strncmp(*envp, "OLDPWD", 6) == 0)
-        {
+			return (NULL);
+		if (ft_strncmp(*enp, "OLDPWD", 6) == 0)
+		{
 			free(cont);
-            envp++;
-            continue ;
-        }
-		for_contents(envp, cont);
-		ft_lstadd_back(&enp, ft_lstnew(cont));
-		envp++;
+			enp++;
+			continue ;
+		}
+		for_contents(enp, cont);
+		ft_lstadd_back(&envp, ft_lstnew(cont));
+		enp++;
 	}
-	return (enp);
+	return (envp);
 }
 
-void	for_cont_free(void *cont)
+static void	main_loop(t_ms *data)
 {
-	t_env	*env;
-
-	env = (t_env *)cont;
-	if (!env)
-		return ;
-	if (env->key)
-		free(env->key);
-	if (env->value)
-		free(env->value);
-	free(env);
+	while (1)
+	{
+		signals_inter();
+		data->line = readline("minishell> ");
+		if (g_sig == SIGINT)
+		{
+			data->exit_num = 130;
+			g_sig = 0;
+		}
+		if (!data->line)
+			break ;
+		if (*data->line && *data->line != '\n')
+		{
+			add_history(data->line);
+			data->cmds = parse_input_with_exit(data->line, data);
+			if (data->cmds)
+			{
+				for_execute(data);
+				ft_lstclear(&data->cmds, free_cmd_content);
+			}
+		}
+		free(data->line);
+	}
+	write(1, "exit\n", 5);
 }
 
-int	main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **enp)
 {
-	char	*line;
-	t_list	*enp;
-	t_list	*cmds;
+	t_ms	*data;
 
 	(void)argc;
 	(void)argv;
-	cmds = NULL;
-	enp = for_the_env(envp);
-	while (1)
+	data = malloc(sizeof(t_ms));
+	data->envp = malloc(sizeof(t_list *));
+	if (!data->envp)
 	{
-		line = readline("minishell> ");
-		if (!line) // Ctrl+D (EOF) durumunda NULL döner
-			break ;
-		if (*line && *line != '\n')
-		{
-			add_history(line);
-			cmds = mock_parser(line);
-			for_execute(cmds, &enp, line);
-			ft_lstclear(&cmds, free_cmd_content);
-		}
-		free(line);
+		free(data);
+		return (1);
 	}
-	ft_lstclear(&enp, for_cont_free);
-	rl_clear_history();
+	*(data->envp) = for_the_env(enp);
+	data->exit_num = 0;
+	data->cmds = NULL;
+	main_loop(data);
+	ft_lstclear(data->envp, for_cont_free);
+	free(data->envp);
+	free(data);
+	clear_history();
 	return (0);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   export2.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:07:17 by zkarali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:07:18 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   export2.c                                            :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/04/04 23:24:54 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/18 14:25:12 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,21 +57,23 @@ void	for_new_node(t_list **envp, char *key, char *val)
 	ft_lstadd_back(envp, node);
 }
 
-int	check(char *c)
+int	check(char *c, t_ms *data)
 {
 	int	i;
 
 	i = 0;
 	if (!c || ft_isdigit(c[0]) || c[0] == '=')
 	{
-		write(2, "not a valid identifier\n", 23);
+		for_err("export", c, "not a valid identifier");
+		data->exit_num = 1;
 		return (0);
 	}
 	while (c[i] && c[i] != '=')
 	{
 		if (!ft_isalnum(c[i]) && c[i] != '_')
 		{
-			write(2, "not a valid identifier\n", 23);
+			for_err("export", c, "not a valid identifier");
+			data->exit_num = 1;
 			return (0);
 		}
 		i++;

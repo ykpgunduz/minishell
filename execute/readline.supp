@@ -13,3 +13,11 @@
     ...
     fun:add_history
 }
+
+{
+    readline_bracketed_paste
+    Memcheck:Leak
+    match-leak-kinds: definite
+    ...
+    fun:rl_bracketed_paste_begin
+}

@@ -1,38 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pwd_env.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:07:21 by zkarali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:07:22 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   pwd_env.c                                            :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/04/04 09:35:08 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/17 07:43:57 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-void	for_pwd(void)
+void	for_pwd(t_ms *data)
 {
 	char	*b;
 
 	b = getcwd(NULL, 0);
 	if (b != NULL)
 	{
-		write(1, b, ft_strlen(b));
-		write(1, "\n", 1);
+		ft_putendl_fd(b, 1);
 		free(b);
+		data->exit_num = 0;
 	}
 	else
-		perror("minishell: pwd");
+	{
+		for_err("pwd", NULL, strerror(errno));
+		data->exit_num = 1;
+	}
 }
 
-void	for_env(t_list *envp)
+void	for_env(t_list **envp, t_ms *data)
 {
 	t_env	*cont;
 	t_list	*tmp;
 
-	tmp = envp;
+	tmp = *envp;
 	while (tmp)
 	{
 		cont = (t_env *)tmp->content;
@@ -45,4 +48,5 @@ void	for_env(t_list *envp)
 		}
 		tmp = tmp->next;
 	}
+	data->exit_num = 0;
 }

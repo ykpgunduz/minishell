@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:06:57 by zkarali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:06:58 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   cd.c                                                 :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/03/28 08:26:06 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/20 15:46:31 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char	*for_env_value(t_list *envp, char *s)
 	return (NULL);
 }
 
-static void	extra(char *tar, t_list **envp)
+static void	extra(char *tar, t_list **envp, t_ms *data)
 {
 	char	*old_pwd;
 	char	*new_pwd;
@@ -56,8 +56,10 @@ static void	extra(char *tar, t_list **envp)
 	old_pwd = getcwd(NULL, 0);
 	if (chdir(tar) == -1)
 	{
-		perror("minishell: cd");
-		free(old_pwd);
+		for_err("cd", NULL, strerror(errno));
+		data->exit_num = 1;
+		if (old_pwd)
+			free(old_pwd);
 		return ;
 	}
 	new_pwd = getcwd(NULL, 0);
@@ -65,9 +67,10 @@ static void	extra(char *tar, t_list **envp)
 	env_node(envp, "PWD", new_pwd);
 	free(old_pwd);
 	free(new_pwd);
+	data->exit_num = 0;
 }
 
-void	for_cd(char *c, t_list **envp)
+void	for_cd(char *c, t_list **envp, t_ms *data)
 {
 	char	*tar;
 
@@ -79,6 +82,7 @@ void	for_cd(char *c, t_list **envp)
 		if (!tar)
 		{
 			write(2, "minishell: cd: OLDPWD not set\n", 30);
+			data->exit_num = 1;
 			return ;
 		}
 		ft_putendl_fd(tar, 1);
@@ -88,7 +92,8 @@ void	for_cd(char *c, t_list **envp)
 	if (tar == NULL)
 	{
 		write(2, "minishell: cd: HOME not set\n", 28);
+		data->exit_num = 1;
 		return ;
 	}
-	extra(tar, envp);
+	extra(tar, envp, data);
 }

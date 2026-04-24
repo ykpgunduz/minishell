@@ -13,7 +13,7 @@ LIBFT       = $(LIBFT_PATH)/libft.a
 BUILTIN_PATH = ./builtin
 BUILTIN_LIB  = $(BUILTIN_PATH)/builtin.a
 
-SRCS        = main.c exec.c exec2.c exec3.c path.c heredoc.c utils.c
+SRCS        = main.c exec.c exec2.c exec3.c path.c heredoc.c utils.c signal.c
 OBJS        = $(SRCS:.c=.o)
 
 INCLUDES    = -I./includes -I$(LIBFT_PATH) -I$(BUILTIN_PATH) $(READLINE_INC)
