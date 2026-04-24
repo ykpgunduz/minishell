@@ -15,10 +15,6 @@
 
 # include "../includes/mini.h"
 
-typedef struct s_cmd	t_cmd;
-typedef struct s_code	t_code;
-typedef struct s_ms		t_ms;
-
 int						is_builtin(t_cmd *cmd);
 int						is_env_builtin(t_cmd *cmd);
 void					builtin_execute(t_cmd *cmd, t_ms *data);
