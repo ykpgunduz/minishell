@@ -84,7 +84,7 @@ int			handle_append(t_cmd *cmd, char **tokens, int *i, t_ms *data);
 int			handle_heredoc(t_cmd *cmd, char **tokens, int *i, t_ms *data);
 
 int			ft_isspace(char c);
-int			is_escaped(char *input, int pos);
+
 void		init_lex_state(t_lex_state *state, char *input);
 
 char		*get_env_value(char *key, t_list *envp);

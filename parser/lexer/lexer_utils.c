@@ -23,14 +23,12 @@ void	advance_quote_state(t_lex_state *state)
 	char	c;
 
 	c = state->input[state->pos];
-	if ((c == '"' || c == '\'') && !state->in_quote && !is_escaped(state->input,
-			state->pos))
+	if ((c == '"' || c == '\'') && !state->in_quote)
 	{
 		state->in_quote = 1;
 		state->quote_char = c;
 	}
-	else if (c == state->quote_char && state->in_quote
-		&& !is_escaped(state->input, state->pos))
+	else if (c == state->quote_char && state->in_quote)
 		state->in_quote = 0;
 }
 
@@ -40,21 +38,6 @@ int	ft_isspace(char c)
 		|| c == '\r');
 }
 
-int	is_escaped(char *input, int pos)
-{
-	int	count;
-
-	if (pos == 0)
-		return (0);
-	count = 0;
-	pos--;
-	while (pos >= 0 && input[pos] == '\\')
-	{
-		count++;
-		pos--;
-	}
-	return (count % 2);
-}
 
 void	init_lex_state(t_lex_state *state, char *input)
 {
