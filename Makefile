@@ -95,10 +95,10 @@ $(NAME): $(ALL_OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	@rm -f $(ALL_OBJS)
+	rm -f $(ALL_OBJS)
 
 fclean: clean
-	@rm -f $(NAME)
+	rm -f $(NAME)
 
 re: fclean all
 

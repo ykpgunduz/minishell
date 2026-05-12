@@ -91,6 +91,8 @@ static void	setup_heredoc_quote(t_cmd *cmd, char *delimiter, t_ms *data)
 	}
 	else
 	{
+		if (cmd->delimiter)
+			free(cmd->delimiter);
 		cmd->delimiter = ft_strdup(delimiter);
 		cmd->expand = 1;
 	}

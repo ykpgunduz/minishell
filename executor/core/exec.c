@@ -79,6 +79,8 @@ static void	for_pipes_exit(pid_t p, t_ms *data)
 					write(2, "Quit (core dumped)\n", 19);
 				else if (WTERMSIG(status) == SIGINT)
 					write(2, "\n", 1);
+				else if (WTERMSIG(status) == SIGSEGV)
+					write(2, "Segmentation fault (core dumped)\n", 34);
 			}
 		}
 	}
