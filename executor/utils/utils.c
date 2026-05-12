@@ -58,10 +58,13 @@ void	for_enoexec(t_cmd *cmd, char *path, char **env, t_ms *data)
 
 void	before_path(t_cmd *cmd, t_ms *data)
 {
+	int	i;
+
 	if (!cmd->args || !cmd->args[0])
 	{
+		i = data->exit_num;
 		for_free(data);
-		exit(data->exit_num);
+		exit(i);
 	}
 	if (is_builtin(cmd))
 	{
