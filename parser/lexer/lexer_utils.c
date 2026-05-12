@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                           :::      ::::::: */
-/*   lexer_utils.c                                         :+:      :+:    :+ */
-/*                                                       +:+ +:+         +:+  */
-/*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
-/*                                                   +#+#+#+#+#+   +#+        */
-/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
-/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
+/*                                                        :::      ::::::::   */
+/*   lexer_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/14 09:25:19 by yagunduz          #+#    #+#             */
+/*   Updated: 2026/05/12 11:18:59 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	ft_isspace(char c)
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
 		|| c == '\r');
 }
-
 
 void	init_lex_state(t_lex_state *state, char *input)
 {
