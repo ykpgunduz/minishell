@@ -62,13 +62,13 @@ BUILTIN_SRCS = executor/builtin/the.c \
 PARSER_SRCS  = parser/core/parser.c \
                parser/core/parser_utils.c \
                parser/core/parser_redirect.c \
+               parser/core/parser_redirect_utils.c\
                parser/lexer/lexer.c \
                parser/lexer/lexer_utils.c \
                parser/lexer/quote.c \
                parser/lexer/quote_utils.c \
                parser/lexer/special.c \
-               parser/expander/expander.c \
-               parser/expander/expander_utils.c
+               parser/expander/expander.c
 
 EXEC_SRCS    = executor/core/main.c \
                executor/core/exec.c \

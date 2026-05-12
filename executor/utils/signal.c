@@ -35,12 +35,3 @@ void	signals_inter(void)
 	sa.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &sa, NULL);
 }
-
-void	heredoc_sig(int sig)
-{
-	(void)sig;
-	g_sig = SIGINT;
-	ioctl(STDIN_FILENO, TIOCSTI, "\n");
-	rl_on_new_line();
-	rl_replace_line("", 0);
-}

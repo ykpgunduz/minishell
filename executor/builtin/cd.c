@@ -12,7 +12,7 @@
 
 #include "builtin.h"
 
-void	env_node(t_list **envp, char *s, char *pwd)
+void	env_node(t_list **envp, char *key, char *val)
 {
 	t_list	*tmp;
 	t_env	*cont;
@@ -21,15 +21,16 @@ void	env_node(t_list **envp, char *s, char *pwd)
 	while (tmp)
 	{
 		cont = (t_env *)tmp->content;
-		if (ft_strcmp(cont->key, s) == 0)
+		if (ft_strcmp(cont->key, key) == 0)
 		{
-			free(cont->value);
-			cont->value = ft_strdup(pwd);
+			if (cont->value)
+				free(cont->value);
+			cont->value = ft_strdup(val);
 			return ;
 		}
 		tmp = tmp->next;
 	}
-	for_new_node(envp, s, pwd);
+	for_new_node(envp, key, val);
 }
 
 char	*for_env_value(t_list *envp, char *s)
@@ -64,19 +65,33 @@ static void	extra(char *tar, t_list **envp, t_ms *data)
 	}
 	new_pwd = getcwd(NULL, 0);
 	env_node(envp, "OLDPWD", old_pwd);
-	env_node(envp, "PWD", new_pwd);
 	free(old_pwd);
+	env_node(envp, "PWD", new_pwd);
 	free(new_pwd);
 	data->exit_num = 0;
 }
 
-void	for_cd(char *c, t_list **envp, t_ms *data)
+static int	for_check(t_ms *data, char **c, char **tar, t_list **envp)
+{
+	if (c[1] == NULL)
+		*tar = for_env_value(*envp, "HOME");
+	if (c[2] != NULL)
+	{
+		for_err("cd", NULL, "too many arguments");
+		data->exit_num = 1;
+		return (1);
+	}
+	return (0);
+}
+
+void	for_cd(char **c, t_list **envp, t_ms *data)
 {
 	char	*tar;
 
-	if (c == NULL)
-		tar = for_env_value(*envp, "HOME");
-	else if (ft_strcmp(c, "-") == 0)
+	tar = NULL;
+	if (for_check(data, c, &tar, envp))
+		return ;
+	else if (c[1] && ft_strcmp(c[1], "-") == 0)
 	{
 		tar = for_env_value(*envp, "OLDPWD");
 		if (!tar)
@@ -87,13 +102,7 @@ void	for_cd(char *c, t_list **envp, t_ms *data)
 		}
 		ft_putendl_fd(tar, 1);
 	}
-	else
-		tar = c;
-	if (tar == NULL)
-	{
-		write(2, "minishell: cd: HOME not set\n", 28);
-		data->exit_num = 1;
-		return ;
-	}
+	else if (c[1])
+		tar = c[1];
 	extra(tar, envp, data);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec_utils.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/12 11:11:59 by zkarali           #+#    #+#             */
-/*   Updated: 2026/05/12 11:12:01 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   exec3.c                                              :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/04/05 12:24:33 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/20 20:33:30 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@ static char	**for_exec_envp(t_list *envp)
 	{
 		cont = (t_env *)tmp->content;
 		s = ft_strjoin(cont->key, "=");
-		ar[i] = ft_strjoin(s, cont->value);
+		if (cont->value)
+			ar[i] = ft_strjoin(s, cont->value);
+		else
+			ar[i] = ft_strdup(cont->key);
 		free(s);
 		tmp = tmp->next;
 		i++;
@@ -65,6 +68,7 @@ void	for_path(t_cmd *cmd, t_ms *data)
 		data->exit_num = 126;
 	else
 		data->exit_num = 1;
+	free(path);
 	for_err(cmd->args[0], NULL, strerror(errno));
 	for_free(data);
 	free_s(env);

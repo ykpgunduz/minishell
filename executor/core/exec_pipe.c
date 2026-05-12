@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec_pipe.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/12 11:11:42 by zkarali           #+#    #+#             */
-/*   Updated: 2026/05/12 11:11:48 by zkarali          ###   ########.fr       */
+/*                                                          :::      :::::::  */
+/*   exec2.c                                              :+:      :+:    :+  */
+/*                                                      +:+ +:+         +:+   */
+/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
+/*                                                  +#+#+#+#+#+   +#+         */
+/*   Created: 2026/03/31 01:37:06 by zkarali             #+#    #+#           */
+/*   Updated: 2026/04/11 03:48:04 by zkarali            ###   ########.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@ static void	child_p(t_chi *chi, t_cmd *cmd, t_list *tmp, t_ms *data)
 {
 	int	write;
 
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-	for_read(cmd, chi->prev_fd, data);
+	in_child_p(cmd, chi, data, tmp);
 	write = for_outfile(cmd);
 	if (write == -1)
 	{
@@ -58,7 +56,7 @@ static int	for_pipe(int *fd, t_list *tmp)
 	if (tmp->next)
 	{
 		if (pipe(fd) == -1)
-			return (perror("pipe"), 1);
+			return (1);
 	}
 	return (0);
 }

@@ -11,61 +11,13 @@
 /* ************************************************************************** */
 
 #include "mini.h"
-#include "builtin/builtin.h"
 
-static char	*for_expander_part(char *left, char *mid, char *right)
+static void	h_msg(t_cmd *cmd)
 {
-	char	*tmp;
-	char	*res;
-
-	tmp = ft_strjoin(left, mid);
-	free(left);
-	free(mid);
-	res = ft_strjoin(tmp, right);
-	free(tmp);
-	free(right);
-	return (res);
-}
-
-static char	*for_find(char *find, t_list *envp, t_ms *data, int *i)
-{
-	char	*tmp;
-	char	*val;
-
-	if (find[1] == '?')
-	{
-		*i = 2;
-		return (ft_itoa(data->exit_num));
-	}
-	*i = 1;
-	while (find[*i] && (ft_isalnum(find[*i]) || find[*i] == '_'))
-		(*i)++;
-	tmp = ft_substr(find, 1, *i - 1);
-	val = for_env_value(envp, tmp);
-	free(tmp);
-	if (!val)
-		return (ft_strdup(""));
-	return (ft_strdup(val));
-}
-
-static char	*for_expander(char *s, t_list *envp, t_ms *data)
-{
-	int		i;
-	char	*find;
-	char	*str[3];
-	char	*r;
-
-	find = ft_strchr(s, '$');
-	if (!find || !find[1])
-		return (s);
-	str[0] = ft_substr(s, 0, find - s);
-	str[1] = for_find(find, envp, data, &i);
-	str[2] = ft_strdup(find + i);
-	r = for_expander_part(str[0], str[1], str[2]);
-	free(s);
-	if (ft_strchr(r, '$'))
-		return (for_expander(r, envp, data));
-	return (r);
+	ft_putstr_fd("minishell: warning: ", 2);
+	ft_putstr_fd("here-document delimited by end-of-file (warning '", 2);
+	ft_putstr_fd(cmd->delimiter, 2);
+	ft_putendl_fd("')", 2);
 }
 
 static void	for_h_loop(t_cmd *cmd, t_list *envp, int *fd, t_ms *data)
@@ -81,33 +33,61 @@ static void	for_h_loop(t_cmd *cmd, t_list *envp, int *fd, t_ms *data)
 			break ;
 		}
 		if (!h_read)
-			break ;
-		if (ft_strcmp(h_read, cmd->delimiter) == 0)
 		{
-			free(h_read);
+			h_msg(cmd);
 			break ;
 		}
+		if (ft_strcmp(h_read, cmd->delimiter) == 0)
+			return (free(h_read));
 		if (cmd->expand)
 			h_read = for_expander(h_read, envp, data);
+		if (!h_read)
+			break ;
 		ft_putendl_fd(h_read, fd[1]);
 		free(h_read);
 	}
 }
 
+static int	for_h_parent(pid_t p, int *fd)
+{
+	int	s;
+
+	if (p < 0)
+		return (-1);
+	close(fd[1]);
+	waitpid(p, &s, 0);
+	signals_inter();
+	if (WIFSIGNALED(s) && WTERMSIG(s) == SIGINT)
+	{
+		close(fd[0]);
+		write(1, "\n", 1);
+		g_sig = SIGINT;
+		return (-3);
+	}
+	return (0);
+}
+
 int	for_heredoc(t_cmd *cmd, t_list *envp, t_ms *data)
 {
-	int	fd[2];
+	int		fd[2];
+	pid_t	p;
+	int		i;
 
 	if (pipe(fd) == -1)
 		return (-1);
-	signal(SIGINT, heredoc_sig);
-	for_h_loop(cmd, envp, fd, data);
-	signals_inter();
-	close(fd[1]);
-	if (g_sig == SIGINT)
+	p = fork();
+	if (p == 0)
 	{
+		signal(SIGINT, SIG_DFL);
 		close(fd[0]);
-		return (-3);
+		for_h_loop(cmd, envp, fd, data);
+		close(fd[1]);
+		for_free(data);
+		exit(0);
 	}
+	i = for_h_parent(p, fd);
+	if (i != 0)
+		return (i);
+	data->heredoc_fd = fd[0];
 	return (fd[0]);
 }

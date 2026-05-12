@@ -25,8 +25,17 @@ void	for_pwd(t_ms *data)
 	}
 	else
 	{
-		for_err("pwd", NULL, strerror(errno));
-		data->exit_num = 1;
+		b = for_env_value(*(data->envp), "PWD");
+		if (b)
+		{
+			ft_putendl_fd(b, 1);
+			data->exit_num = 0;
+		}
+		else
+		{
+			for_err("pwd", NULL, strerror(errno));
+			data->exit_num = 1;
+		}
 	}
 }
 

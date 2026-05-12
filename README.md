@@ -3,7 +3,7 @@
 # Minishell
 
 ## Description
-Minishell is a project in the 42 curriculum that aims to recreate a simple UNIX command shell, mirroring the core functionalities of Bash. The goal of this project is to introduce students to the concepts of process creation, file descriptors, signals, and abstract syntax trees (or at least complex parsing logic) in C. 
+Minishell is a project in the 42 curriculum that aims to recreate a simple UNIX command shell by implementing a subset of Bash features. The goal of this project is to introduce students to the concepts of process creation, file descriptors, signals, and abstract syntax trees (or at least complex parsing logic) in C. 
 
 The project is divided into two primary modules:
 - **Parser**: Responsible for reading the user input, tokenizing it, handling quotes (single and double), expanding environment variables (`$VAR`, `$?`), and preparing a structured command format.

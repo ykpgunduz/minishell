@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
 #include "mini.h"
 
 static void	for_contents(char **envp, t_env *cont)
@@ -41,12 +40,6 @@ static t_list	*for_the_env(char **enp)
 		cont = malloc(sizeof(t_env));
 		if (!cont)
 			return (NULL);
-		if (ft_strncmp(*enp, "OLDPWD", 6) == 0)
-		{
-			free(cont);
-			enp++;
-			continue ;
-		}
 		for_contents(enp, cont);
 		ft_lstadd_back(&envp, ft_lstnew(cont));
 		enp++;
@@ -85,6 +78,7 @@ static void	main_loop(t_ms *data)
 int	main(int argc, char **argv, char **enp)
 {
 	t_ms	*data;
+	int		i;
 
 	(void)argc;
 	(void)argv;
@@ -97,11 +91,14 @@ int	main(int argc, char **argv, char **enp)
 	}
 	*(data->envp) = for_the_env(enp);
 	data->exit_num = 0;
+	data->heredoc_fd = 0;
 	data->cmds = NULL;
+	data->line = NULL;
 	main_loop(data);
+	i = data->exit_num;
 	ft_lstclear(data->envp, for_cont_free);
 	free(data->envp);
 	free(data);
 	clear_history();
-	return (0);
+	return (i);
 }

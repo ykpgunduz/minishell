@@ -52,9 +52,9 @@ static int	unset_check(char *c)
 	int	i;
 
 	i = 0;
-	if (!c || ft_isdigit(c[0]) || c[0] == '=')
+	if (!c)
 		return (0);
-	while (c[i])
+	while (c[i] && c[i] != '=')
 	{
 		if (!ft_isalnum(c[i]) && c[i] != '_')
 			return (0);
@@ -72,7 +72,7 @@ void	for_unset(t_cmd *cmd, t_list **envp, t_ms *data)
 	data->exit_num = 0;
 	while (cmd->args[i])
 	{
-		if (ft_strchr(cmd->args[i], '=') || !unset_check(cmd->args[i]))
+		if (!unset_check(cmd->args[i]))
 		{
 			for_err("unset", cmd->args[i], "not a valid identifier");
 			data->exit_num = 1;

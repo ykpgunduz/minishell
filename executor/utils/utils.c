@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin/builtin.h"
 #include "mini.h"
 
 void	free_s(char **s)
@@ -52,6 +51,7 @@ void	for_enoexec(t_cmd *cmd, char *path, char **env, t_ms *data)
 	execve("/bin/sh", sh, env);
 	for_err(cmd->args[0], NULL, strerror(errno));
 	free(sh);
+	free(path);
 	data->exit_num = 126;
 	exit(126);
 }
@@ -61,11 +61,11 @@ void	before_path(t_cmd *cmd, t_ms *data)
 	if (!cmd->args || !cmd->args[0])
 	{
 		for_free(data);
-		exit(0);
+		exit(data->exit_num);
 	}
 	if (is_builtin(cmd))
 	{
-		builtin_execute(cmd, data);
+		for_builtin(cmd, data);
 		for_free(data);
 		exit(0);
 	}
@@ -73,20 +73,16 @@ void	before_path(t_cmd *cmd, t_ms *data)
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
-	size_t			i;
-	unsigned char	*p1;
-	unsigned char	*p2;
+	size_t	i;
 
 	i = 0;
-	p1 = (unsigned char *)s1;
-	p2 = (unsigned char *)s2;
-	while (p1[i] && p2[i])
+	while (s1[i] && s2[i])
 	{
-		if (p1[i] != p2[i])
-			return (p1[i] - p2[i]);
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 		i++;
 	}
-	return (0);
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
 void	for_err(char *com, char *msg, char *err)

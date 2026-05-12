@@ -50,7 +50,8 @@ static int	parse_command(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 		}
 	}
 	cmd->args[arg_count] = NULL;
-	return (arg_count > 0);
+	return (arg_count > 0 || cmd->type_in != NONE
+		|| cmd->type_out != NONE);
 }
 
 static int	proc_cmd(t_cmd *cmd, char **tokens, int *i, t_ms *data)
@@ -60,14 +61,12 @@ static int	proc_cmd(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 	status = parse_command(cmd, tokens, i, data);
 	if (status < 0)
 	{
-		free(cmd->args);
-		free(cmd);
+		data->exit_num = 1;
 		return (-1);
 	}
 	if (status == 0)
 	{
-		free(cmd->args);
-		free(cmd);
+		free_cmd_content(cmd);
 		return (0);
 	}
 	return (1);
@@ -90,10 +89,11 @@ static t_list	*loop_tokens(char **tokens, t_ms *data)
 		st = proc_cmd(cmd, tokens, &i, data);
 		if (st < 0)
 		{
-			ft_lstclear(&cmd_list, free_cmd_content);
-			return (NULL);
+			data->exit_num = 1;
+			while (tokens[i] && !is_pipe(tokens[i]))
+				i++;
 		}
-		if (st > 0)
+		if (st != 0)
 			ft_lstadd_back(&cmd_list, ft_lstnew(cmd));
 		if (tokens[i] && is_pipe(tokens[i]))
 			i++;
@@ -113,6 +113,7 @@ t_list	*parse_input_with_exit(char *input, t_ms *data)
 		return (NULL);
 	if (!validate_syntax(tokens))
 	{
+		data->exit_num = 2;
 		free_tokens(tokens);
 		return (NULL);
 	}

@@ -52,6 +52,8 @@ void	free_cmd_content(void *content)
 
 void	for_free(t_ms *data)
 {
+	if (data->heredoc_fd > 0)
+		close(data->heredoc_fd);
 	if (data->cmds)
 		ft_lstclear(&data->cmds, free_cmd_content);
 	if (data->envp && *(data->envp))
@@ -62,4 +64,5 @@ void	for_free(t_ms *data)
 		free(data->line);
 	free(data);
 	clear_history();
+	rl_cleanup_after_signal();
 }

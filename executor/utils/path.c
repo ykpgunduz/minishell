@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin/builtin.h"
 #include "mini.h"
 
 static char	*making_str(char *paths, char *command)
@@ -28,20 +27,18 @@ static char	*making_str(char *paths, char *command)
 	return (str2);
 }
 
-static int	for_access(char *true_path, t_ms *data)
+static int	for_access(char *true_path)
 {
 	if (access(true_path, X_OK) == 0)
-	{
-		for_check_stat(true_path, data);
 		return (1);
-	}
 	return (0);
 }
 
-static char	*find_in_paths(char **paths, char *command, t_ms *data)
+static char	*find_in_paths(char **paths, char *command)
 {
-	char	*true_path;
-	int		i;
+	char		*true_path;
+	int			i;
+	struct stat	path;
 
 	i = -1;
 	while (paths[++i])
@@ -49,8 +46,13 @@ static char	*find_in_paths(char **paths, char *command, t_ms *data)
 		true_path = making_str(paths[i], command);
 		if (!true_path)
 			break ;
-		if (for_access(true_path, data) == 1)
+		if (for_access(true_path) == 1)
 		{
+			if (stat(true_path, &path) == 0 && S_ISDIR(path.st_mode))
+			{
+				free(true_path);
+				continue ;
+			}
 			free_s(paths);
 			return (true_path);
 		}
@@ -73,5 +75,5 @@ char	*check_path(char *command, t_ms *data)
 	paths = ft_split(path, ':');
 	if (!paths)
 		return (NULL);
-	return (find_in_paths(paths, command, data));
+	return (find_in_paths(paths, command));
 }

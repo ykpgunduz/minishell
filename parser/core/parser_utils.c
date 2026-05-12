@@ -52,18 +52,29 @@ t_cmd	*create_cmd(void)
 		free(cmd);
 		return (NULL);
 	}
+	ft_memset(cmd->args, 0, sizeof(char *) * 512);
 	return (cmd);
 }
 
 int	add_command_arg(t_cmd *cmd, char *arg, int *count, t_ms *data)
 {
 	char	*processed;
+	int		for_quotes;
 
+	for_quotes = is_quote(arg[0]) || ft_strchr(arg, '"')
+		|| ft_strchr(arg, '\'');
 	processed = process_quotes_with_env(arg, data);
 	if (!processed)
 		return (-1);
+	if (*processed == '\0' && !for_quotes)
+	{
+		free(processed);
+		processed = NULL;
+		return (1);
+	}
 	cmd->args[*count] = processed;
 	(*count)++;
+	cmd->args[*count] = NULL;
 	if (*count >= 511)
 	{
 		ft_putendl_fd("error: too many arguments", 2);

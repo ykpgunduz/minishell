@@ -13,7 +13,7 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "mini.h"
+# include "../types_etc.h"
 
 typedef struct s_token
 {
@@ -69,8 +69,6 @@ int			validate_syntax(char **tokens);
 
 char		*process_quotes(char *token);
 char		*process_quotes_with_env(char *token, t_ms *data);
-char		*expand_variables(char *token, t_list *envp);
-char		*expand_variables_with_exit(char *token, t_ms *data);
 
 t_cmd		*create_cmd(void);
 int			add_command_arg(t_cmd *cmd, char *arg, int *count, t_ms *data);
@@ -86,13 +84,9 @@ int			handle_heredoc(t_cmd *cmd, char **tokens, int *i, t_ms *data);
 int			ft_isspace(char c);
 
 void		init_lex_state(t_lex_state *state, char *input);
+int			is_redirect_char(char c);
 
-char		*get_env_value(char *key, t_list *envp);
-int			extract_var_name(char *start, char *name);
-char		*expand_part(char *left, char *mid, char *right);
-char		*expand_exit_status(char *str, t_ms *data);
-
-int			count_real_len(char *token);
+void		count_real_len(char *token, int *len);
 int			needs_expansion(char *token);
 char		*remove_quotes(char *token);
 

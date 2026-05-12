@@ -16,21 +16,24 @@ static void	handle_quote_removal(char *token, char *result)
 {
 	int	i;
 	int	j;
+	int	sing;
+	int	doub;
 
 	i = 0;
 	j = 0;
+	sing = 0;
+	doub = 0;
 	while (token[i])
 	{
-		if (token[i] == '\\' && token[i + 1] && (token[i + 1] == '"'
-				|| token[i + 1] == '\''))
-		{
-			result[j++] = token[i + 1];
-			i += 2;
-		}
-		else if (token[i] == '"' || token[i] == '\'')
-			i++;
+		if (token[i] == '\'' && !doub)
+			sing = !sing;
+		else if (token[i] == '"' && !sing)
+			doub = !doub;
+		else if (token[i] == '\\' && !sing && !doub && token[i + 1])
+			result[j++] = token[++i];
 		else
-			result[j++] = token[i++];
+			result[j++] = token[i];
+		i++;
 	}
 	result[j] = '\0';
 }
@@ -38,8 +41,11 @@ static void	handle_quote_removal(char *token, char *result)
 char	*remove_quotes(char *token)
 {
 	char	*result;
+	int		len;
 
-	result = malloc(count_real_len(token) + 1);
+	len = 0;
+	count_real_len(token, &len);
+	result = malloc(len + 1);
 	if (!result)
 		return (NULL);
 	handle_quote_removal(token, result);
@@ -63,14 +69,12 @@ char	*process_quotes_with_env(char *token, t_ms *data)
 		ft_putendl_fd("minishell: unclosed quote", 2);
 		return (NULL);
 	}
-	removed = remove_quotes(token);
-	if (!removed)
-		return (NULL);
 	if (needs_expansion(token))
 	{
-		expanded = expand_variables_with_exit(removed, data);
-		free(removed);
-		return (expanded);
+		expanded = for_expander(ft_strdup(token), *(data->envp), data);
+		removed = remove_quotes(expanded);
+		free(expanded);
+		return (removed);
 	}
-	return (removed);
+	return (remove_quotes(token));
 }

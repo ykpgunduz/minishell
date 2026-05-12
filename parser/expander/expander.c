@@ -1,79 +1,94 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                           :::      ::::::: */
-/*   expander.c                                            :+:      :+:    :+ */
-/*                                                       +:+ +:+         +:+  */
-/*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
-/*                                                   +#+#+#+#+#+   +#+        */
-/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
-/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
+/*                                                        :::      ::::::::   */
+/*   expander.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/12 12:23:59 by zkarali           #+#    #+#             */
+/*   Updated: 2026/05/12 12:24:00 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-static void	init_expand_ctx(t_expand_ctx *ctx, char *s, t_ms *data)
+static char	*for_expander_part(char *left, char *mid, char *right)
 {
-	ctx->str = s;
-	ctx->data = data;
-	ctx->left = NULL;
-	ctx->mid = NULL;
-	ctx->result = NULL;
-	ctx->value = NULL;
+	char	*tmp;
+	char	*res;
+
+	tmp = ft_strjoin(left, mid);
+	free(left);
+	free(mid);
+	res = ft_strjoin(tmp, right);
+	free(tmp);
+	free(right);
+	return (res);
 }
 
-static char	*build_expansion(t_expand_ctx *ctx, char *find, int len)
+static char	*for_find(char *find, t_list *envp, t_ms *data, int *i)
 {
-	if (ctx->data && ctx->data->envp)
-		ctx->value = get_env_value(ctx->name, *(ctx->data->envp));
-	else
-		ctx->value = NULL;
-	if (!ctx->value)
-		ctx->mid = ft_strdup("");
-	else
-		ctx->mid = ft_strdup(ctx->value);
-	if (!ctx->mid)
+	char	*tmp;
+	char	*val;
+
+	if (find[1] == '?')
 	{
-		free(ctx->left);
-		return (ctx->str);
+		*i = 2;
+		return (ft_itoa(data->exit_num));
 	}
-	ctx->result = expand_part(ctx->left, ctx->mid, ft_strdup(find + 1 + len));
-	free(ctx->left);
-	free(ctx->mid);
-	free(ctx->str);
-	if (ft_strchr(ctx->result, '$'))
-		return (expand_variables_with_exit(ctx->result, ctx->data));
-	return (ctx->result);
+	*i = 1;
+	while (find[*i] && (ft_isalnum(find[*i]) || find[*i] == '_'))
+		(*i)++;
+	tmp = ft_substr(find, 1, *i - 1);
+	val = for_env_value(envp, tmp);
+	free(tmp);
+	if (!val)
+		return (ft_strdup(""));
+	return (ft_strdup(val));
 }
 
-char	*expand_variable(char *str, t_ms *data)
+static int	check_exp_free(char **str, char *s, int i)
 {
-	char			*find;
-	t_expand_ctx	ctx;
-	int				len;
-
-	if (data && ft_strchr(str, '$') && ft_strchr(str, '$')[1] == '?')
-		return (expand_exit_status(str, data));
-	find = ft_strchr(str, '$');
-	if (!find || !find[1] || !ft_isalpha(find[1]))
-		return (str);
-	init_expand_ctx(&ctx, str, data);
-	ctx.left = ft_substr(str, 0, find - str);
-	if (!ctx.left)
-		return (str);
-	len = extract_var_name(find + 1, ctx.name);
-	return (build_expansion(&ctx, find, len));
+	if (i == 1 && (!str[0] || !str[1]))
+	{
+		free(str[0]);
+		free(str[1]);
+		free(s);
+		return (1);
+	}
+	else if (i == 2 && !str[2])
+	{
+		free(str[0]);
+		free(str[1]);
+		free(s);
+		return (1);
+	}
+	return (0);
 }
 
-char	*expand_variables(char *token, t_list *envp)
+char	*for_expander(char *s, t_list *envp, t_ms *data)
 {
-	(void)envp;
-	return (expand_variables_with_exit(token, NULL));
-}
+	int		i;
+	char	*find;
+	char	*str[3];
 
-char	*expand_variables_with_exit(char *tok, t_ms *data)
-{
-	if (!tok)
-		return (NULL);
-	return (expand_variable(tok, data));
+	while (1)
+	{
+		find = ft_strchr(s, '$');
+		if (!find || !find[1] || ft_isspace(find[1])
+			|| find[1] == '"' || find[1] == '\'')
+			break ;
+		str[0] = ft_substr(s, 0, find - s);
+		str[1] = for_find(find, envp, data, &i);
+		if (check_exp_free(str, s, 1))
+			return (NULL);
+		str[2] = ft_strdup(find + i);
+		if (check_exp_free(str, s, 2))
+			return (NULL);
+		free(s);
+		s = for_expander_part(str[0], str[1], str[2]);
+		if (!s)
+			return (NULL);
+	}
+	return (s);
 }

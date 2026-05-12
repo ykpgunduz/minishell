@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include "mini.h"
-#include "builtin/builtin.h"
 
-void	for_read(t_cmd *cmd, int prev_fd, t_ms *data)
+static int	for_read(t_cmd *cmd, int prev_fd, t_ms *data)
 {
 	int	read;
 
@@ -21,8 +20,7 @@ void	for_read(t_cmd *cmd, int prev_fd, t_ms *data)
 	if (read == -1)
 	{
 		for_err(cmd->infile, NULL, strerror(errno));
-		data->exit_num = 1;
-		exit(1);
+		return (-1);
 	}
 	else if (read == -3)
 	{
@@ -33,11 +31,30 @@ void	for_read(t_cmd *cmd, int prev_fd, t_ms *data)
 	{
 		dup2(read, STDIN_FILENO);
 		close(read);
+		data->heredoc_fd = -1;
 	}
 	else if (prev_fd > 0)
 	{
 		dup2(prev_fd, STDIN_FILENO);
 		close(prev_fd);
+	}
+	return (0);
+}
+
+void	in_child_p(t_cmd *cmd, t_chi *chi, t_ms *data, t_list *tmp)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	if (for_read(cmd, chi->prev_fd, data) == -1)
+	{
+		if (tmp->next)
+		{
+			close(chi->fd[1]);
+			close(chi->fd[0]);
+		}
+		data->exit_num = 1;
+		for_free(data);
+		exit(1);
 	}
 }
 
@@ -82,7 +99,7 @@ static void	for_env_builtin(t_cmd *cmd, t_ms *data)
 		return ;
 	}
 	dup2(out_fd, STDOUT_FILENO);
-	builtin_execute(cmd, data);
+	for_builtin(cmd, data);
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
 	if (out_fd > 1)

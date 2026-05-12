@@ -70,9 +70,6 @@ static void	extra(t_list **envp, char *s, char *key, char *val)
 	}
 	else
 		for_new_node(envp, key, val);
-	free(key);
-	if (val)
-		free(val);
 }
 
 static void	for_s(char *c, t_list **envp, char *s)
@@ -91,6 +88,9 @@ static void	for_s(char *c, t_list **envp, char *s)
 		val = NULL;
 	}
 	extra(envp, s, key, val);
+	free(key);
+	if (val)
+		free(val);
 }
 
 void	for_export(t_cmd *cmd, t_list **envp, t_ms *data)

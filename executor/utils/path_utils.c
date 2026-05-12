@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin/builtin.h"
 #include "mini.h"
 
 void	for_check_stat(char *path, t_ms *data)
@@ -41,6 +40,7 @@ char	*fir_check(char **com, t_ms *data)
 			for_free(data);
 			exit(127);
 		}
+		for_check_stat(com[0], data);
 		if (access(com[0], X_OK) == -1)
 		{
 			for_err(com[0], NULL, strerror(errno));
@@ -48,7 +48,6 @@ char	*fir_check(char **com, t_ms *data)
 			for_free(data);
 			exit(126);
 		}
-		for_check_stat(com[0], data);
 		return (com[0]);
 	}
 	return (NULL);

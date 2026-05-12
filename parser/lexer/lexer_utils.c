@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   lexer_utils.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/14 09:25:19 by yagunduz          #+#    #+#             */
-/*   Updated: 2026/05/12 11:18:59 by zkarali          ###   ########.fr       */
+/*                                                           :::      ::::::: */
+/*   lexer_utils.c                                         :+:      :+:    :+ */
+/*                                                       +:+ +:+         +:+  */
+/*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
+/*                                                   +#+#+#+#+#+   +#+        */
+/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
+/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,9 @@ void	init_lex_state(t_lex_state *state, char *input)
 	state->quote_char = 0;
 	state->token_count = 0;
 	state->input = input;
+}
+
+int	is_redirect_char(char c)
+{
+	return (c == '<' || c == '>' || c == '|');
 }

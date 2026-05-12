@@ -42,50 +42,58 @@ int	is_quote_closed(char *token)
 	return (!in_single && !in_double);
 }
 
-int	count_real_len(char *token)
+void	count_real_len(char *token, int *len)
 {
-	int	i;
-	int	len;
+	int	sing;
+	int	doub;
 
-	i = 0;
-	len = 0;
-	while (token[i])
+	sing = 0;
+	doub = 0;
+	while (*token)
 	{
-		if (token[i] == '\\' && token[i + 1] && (token[i + 1] == '"'
-				|| token[i + 1] == '\''))
+		if (*token == '\'' && !doub)
 		{
-			i += 2;
-			len++;
+			sing = !sing;
+			token++;
 		}
-		else if (token[i] == '"' || token[i] == '\'')
-			i++;
+		else if (*token == '"' && !sing)
+		{
+			doub = !doub;
+			token++;
+		}
+		else if (*token == '\\' && !sing && !doub && *(token + 1))
+		{
+			(*len)++;
+			token += 2;
+		}
 		else
 		{
-			len++;
-			i++;
+			(*len)++;
+			token++;
 		}
 	}
-	return (len);
 }
 
 int	needs_expansion(char *token)
 {
 	int	i;
 	int	in_single;
+	int	in_double;
 
 	i = 0;
 	in_single = 0;
+	in_double = 0;
 	while (token[i])
 	{
-		if (token[i] == '\\' && token[i + 1])
+		if (token[i] == '\\' && !in_single && token[i + 1])
 		{
 			i += 2;
 			continue ;
 		}
-		if (token[i] == '\'' && !in_single)
-			in_single = 1;
-		else if (token[i] == '\'' && in_single)
-			in_single = 0;
+		if (token[i] == '\'' && !in_double)
+			in_single = !in_single;
+		else if (token[i] == '"' && !in_single)
+			in_double = !in_double;
 		else if (token[i] == '$' && !in_single)
 			return (1);
 		i++;

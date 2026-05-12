@@ -12,7 +12,7 @@
 
 #include "builtin.h"
 
-void	builtin_execute(t_cmd *cmd, t_ms *data)
+void	for_builtin(t_cmd *cmd, t_ms *data)
 {
 	char	*c;
 
@@ -26,7 +26,7 @@ void	builtin_execute(t_cmd *cmd, t_ms *data)
 	else if (ft_strncmp(c, "echo", 5) == 0)
 		for_echo(cmd, data);
 	else if (ft_strncmp(c, "cd", 3) == 0)
-		for_cd(cmd->args[1], data->envp, data);
+		for_cd(cmd->args, data->envp, data);
 	else if (ft_strncmp(c, "export", 7) == 0)
 		for_export(cmd, data->envp, data);
 	else if (ft_strncmp(c, "unset", 6) == 0)
