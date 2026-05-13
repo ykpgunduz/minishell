@@ -1,10 +1,7 @@
 NAME        = minishell
 CC          = cc
 CFLAGS      = -Wall -Wextra -Werror
-
-READLINE_DIR = $(shell brew --prefix readline)
-READLINE_INC = -I$(READLINE_DIR)/include
-LDFLAGS      = -L$(READLINE_DIR)/lib -lreadline
+LDFLAGS     = -lreadline
 
 LIBFT_SRCS   = executor/libft/ft_atoi.c \
                executor/libft/ft_bzero.c \

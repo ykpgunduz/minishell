@@ -99,6 +99,8 @@ int	main(int argc, char **argv, char **enp)
 	ft_lstclear(data->envp, for_cont_free);
 	free(data->envp);
 	free(data);
-	clear_history();
+	rl_free_line_state();
+	rl_cleanup_after_signal();
+	rl_clear_history();
 	return (i);
 }

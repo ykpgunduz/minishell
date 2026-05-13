@@ -63,6 +63,7 @@ void	for_free(t_ms *data)
 	if (data->line)
 		free(data->line);
 	free(data);
-	clear_history();
+	rl_free_line_state();
 	rl_cleanup_after_signal();
+	rl_clear_history();
 }
