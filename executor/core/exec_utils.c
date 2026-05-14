@@ -39,27 +39,31 @@ static char	**for_exec_envp(t_list *envp)
 	return (ar);
 }
 
-static void	for_msg_etc(t_cmd *cmd, t_ms *data)
+static char *for_path(t_cmd *cmd, t_ms *data, char *path)
 {
-	for_err(cmd->args[0], NULL, "command not found");
-	data->exit_num = 127;
-	for_free(data);
-	exit(127);
+	path = fir_check(cmd->args, data);
+	if (path == NULL)
+	{
+		path = check_path(cmd->args[0], data);
+		if (!path || !*path)
+		{
+			for_err(cmd->args[0], NULL, "command not found");
+			data->exit_num = 127;
+			for_free(data);
+			exit(127);
+		}
+	}
+	return (path);
 }
 
 void	for_path(t_cmd *cmd, t_ms *data)
 {
 	char	*path;
 	char	**env;
+	int		i;
 
 	before_path(cmd, data);
-	path = fir_check(cmd->args, data);
-	if (path == NULL)
-	{
-		path = check_path(cmd->args[0], data);
-		if (!path || !*path)
-			for_msg_etc(cmd, data);
-	}
+	path = for_path(cmd, data, path);
 	env = for_exec_envp(*(data->envp));
 	execve(path, cmd->args, env);
 	if (errno == ENOEXEC)
@@ -70,9 +74,10 @@ void	for_path(t_cmd *cmd, t_ms *data)
 		data->exit_num = 1;
 	free(path);
 	for_err(cmd->args[0], NULL, strerror(errno));
+	i = data->exit_num;
 	for_free(data);
 	free_s(env);
-	exit(data->exit_num);
+	exit(i);
 }
 
 int	for_infile(t_cmd *cmd, t_ms *data)
