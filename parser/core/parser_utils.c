@@ -77,7 +77,7 @@ int	add_command_arg(t_cmd *cmd, char *arg, int *count, t_ms *data)
 	cmd->args[*count] = NULL;
 	if (*count >= 511)
 	{
-		ft_putendl_fd("error: too many arguments", 2);
+		for_err("error", NULL, "too many arguments");
 		return (-1);
 	}
 	return (1);

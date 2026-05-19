@@ -49,10 +49,21 @@ static t_list	*for_the_env(char **enp)
 
 static void	main_loop(t_ms *data)
 {
+	char *line_gnl;
 	while (1)
 	{
 		signals_inter();
-		data->line = readline("minishell> ");
+		//data->line = readline("minishell> ");
+		if (isatty(STDIN_FILENO)) // Giriş terminalden mi?
+            data->line = readline("minishell> ");
+        else
+        {
+            line_gnl = get_next_line(STDIN_FILENO);
+            if (!line_gnl) // Dosya sonu (EOF) kontrolü
+                break ;
+            data->line = ft_strtrim(line_gnl, "\n"); // \n karakterini temizle
+            free(line_gnl);
+        }
 		if (g_sig == SIGINT)
 		{
 			data->exit_num = 130;
@@ -72,7 +83,8 @@ static void	main_loop(t_ms *data)
 		}
 		free(data->line);
 	}
-	write(1, "exit\n", 5);
+	if (isatty(STDIN_FILENO))
+		write(1, "exit\n", 5);
 }
 
 int	main(int argc, char **argv, char **enp)

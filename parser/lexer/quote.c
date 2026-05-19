@@ -78,3 +78,21 @@ char	*process_quotes_with_env(char *token, t_ms *data)
 	}
 	return (remove_quotes(token));
 }
+
+int	is_double_quotes(char *start, char *tar)
+{
+	int	doub;
+	int	sing;
+
+	doub = 0;
+	sing = 0;
+	while (start < tar)
+	{
+		if (*start == '\'' && !doub)
+			sing = !sing;
+		else if (*start == '"' && !sing)
+			doub = !doub;
+		start++;
+	}
+	return (doub);
+}

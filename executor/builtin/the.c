@@ -22,7 +22,7 @@ void	for_builtin(t_cmd *cmd, t_ms *data)
 	else if (ft_strncmp(c, "pwd", 4) == 0)
 		for_pwd(data);
 	else if (ft_strncmp(c, "env", 4) == 0)
-		for_env(data->envp, data);
+		for_env(data->envp, data, cmd);
 	else if (ft_strncmp(c, "echo", 5) == 0)
 		for_echo(cmd, data);
 	else if (ft_strncmp(c, "cd", 3) == 0)

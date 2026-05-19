@@ -62,6 +62,12 @@ int	check(char *c, t_ms *data)
 	int	i;
 
 	i = 0;
+	if (c[0] == '-' && c[1] != '\0')
+	{
+		for_err("export", c, "invalid option");
+		data->exit_num = 2;
+		return (0);
+	}
 	if (!c || ft_isdigit(c[0]) || c[0] == '=')
 	{
 		for_err("export", c, "not a valid identifier");

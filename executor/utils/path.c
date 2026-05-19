@@ -12,7 +12,7 @@
 
 #include "mini.h"
 
-static char	*making_str(char *paths, char *command)
+char	*making_str(char *paths, char *command)
 {
 	char	*str;
 	char	*str2;

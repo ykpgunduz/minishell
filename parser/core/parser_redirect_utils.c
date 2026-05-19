@@ -18,7 +18,8 @@ int	handle_input_redirect(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 
 	if (!tokens[*i + 1])
 	{
-		ft_putendl_fd("syntax error: expected filename after '<'", 2);
+		for_err("syntax error", NULL, "expected filename after '<'");
+		data->exit_num = 2;
 		return (-1);
 	}
 	cmd->type_in = REDIR_IN;

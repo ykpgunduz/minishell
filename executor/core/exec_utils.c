@@ -39,7 +39,7 @@ static char	**for_exec_envp(t_list *envp)
 	return (ar);
 }
 
-static char *for_path(t_cmd *cmd, t_ms *data, char *path)
+static char	*for_paths_path(t_cmd *cmd, t_ms *data, char *path)
 {
 	path = fir_check(cmd->args, data);
 	if (path == NULL)
@@ -62,8 +62,9 @@ void	for_path(t_cmd *cmd, t_ms *data)
 	char	**env;
 	int		i;
 
+	path = NULL;
 	before_path(cmd, data);
-	path = for_path(cmd, data, path);
+	path = for_paths_path(cmd, data, path);
 	env = for_exec_envp(*(data->envp));
 	execve(path, cmd->args, env);
 	if (errno == ENOEXEC)
@@ -83,8 +84,8 @@ void	for_path(t_cmd *cmd, t_ms *data)
 int	for_infile(t_cmd *cmd, t_ms *data)
 {
 	if (cmd->type_in == HEREDOC)
-		return (for_heredoc(cmd, *(data->envp), data));
-	else if (cmd->type_in == REDIR_IN)
+		return (data->heredoc_fd);
+	if (cmd->type_in == REDIR_IN)
 	{
 		if (!cmd->infile)
 			return (-2);

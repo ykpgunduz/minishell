@@ -69,6 +69,7 @@ int			validate_syntax(char **tokens);
 
 char		*process_quotes(char *token);
 char		*process_quotes_with_env(char *token, t_ms *data);
+int			is_double_quotes(char *start, char *tar);
 
 t_cmd		*create_cmd(void);
 int			add_command_arg(t_cmd *cmd, char *arg, int *count, t_ms *data);

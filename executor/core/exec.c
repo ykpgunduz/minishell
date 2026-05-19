@@ -27,13 +27,14 @@ static int	for_read(t_cmd *cmd, int prev_fd, t_ms *data)
 		for_free(data);
 		exit(130);
 	}
-	else if (read > 0)
+	if (read > 0)
 	{
 		dup2(read, STDIN_FILENO);
 		close(read);
-		data->heredoc_fd = -1;
+		if (prev_fd > 0)
+			close(prev_fd);
 	}
-	else if (prev_fd > 0)
+	if (prev_fd != -1 && prev_fd != 0)
 	{
 		dup2(prev_fd, STDIN_FILENO);
 		close(prev_fd);
@@ -114,6 +115,7 @@ void	for_execute(t_ms *data)
 	pid_t	pid;
 	t_cmd	*cmd;
 	t_list	*tmp;
+	t_list	*tmp2;
 
 	i = ft_lstsize(data->cmds);
 	cmd = (t_cmd *)data->cmds->content;
@@ -123,6 +125,18 @@ void	for_execute(t_ms *data)
 		return ;
 	}
 	tmp = data->cmds;
+	tmp2 = data->cmds;
+	while (tmp2)
+	{
+		cmd = (t_cmd *)tmp2->content;
+		if (cmd->type_in == HEREDOC)
+		{
+			data->heredoc_fd = for_heredoc(cmd, *data->envp, data);
+			if (data->heredoc_fd == -3)
+				return ;
+		}
+		tmp2 = tmp2->next;
+	}
 	pid = pipe_loop(data, tmp);
 	if (pid == -2)
 	{

@@ -66,6 +66,15 @@ static int	check_exp_free(char **str, char *s, int i)
 	return (0);
 }
 
+static int	check(char *find)
+{
+	if (!find || !find[1])
+		return (1);
+	if (ft_isspace(find[1]) || ft_isdigit(find[1]))
+		return (1);
+	return (0);
+}
+
 char	*for_expander(char *s, t_list *envp, t_ms *data)
 {
 	int		i;
@@ -75,9 +84,19 @@ char	*for_expander(char *s, t_list *envp, t_ms *data)
 	while (1)
 	{
 		find = ft_strchr(s, '$');
-		if (!find || !find[1] || ft_isspace(find[1])
-			|| find[1] == '"' || find[1] == '\'')
+		if (check(find))
 			break ;
+		if (find[1] == '"' || find[1] == '\'')
+		{
+			if (is_double_quotes(s, find))
+				break ;
+			str[0] = ft_substr(s, 0, find - s);
+			str[1] = ft_strdup("");
+			str[2] = ft_strdup(find + 1);
+			free(s);
+			s = for_expander_part(str[0], str[1], str[2]);
+			continue ;
+		}
 		str[0] = ft_substr(s, 0, find - s);
 		str[1] = for_find(find, envp, data, &i);
 		if (check_exp_free(str, s, 1))

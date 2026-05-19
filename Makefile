@@ -1,6 +1,6 @@
 NAME        = minishell
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror
+CFLAGS      = -Wall -Wextra -Werror -I./executor/get_next_line
 LDFLAGS     = -lreadline
 
 LIBFT_SRCS   = executor/libft/ft_atoi.c \
@@ -76,7 +76,9 @@ EXEC_SRCS    = executor/core/main.c \
                executor/utils/path_utils.c \
                executor/utils/utils.c \
                executor/utils/signal.c \
-               executor/utils/free.c
+               executor/utils/free.c\
+               executor/get_next_line/get_next_line.c \
+                executor/get_next_line/get_next_line_utils.c \
 
 ALL_SRCS     = $(LIBFT_SRCS) $(EXEC_SRCS) $(BUILTIN_SRCS) $(PARSER_SRCS)
 ALL_OBJS     = $(ALL_SRCS:.c=.o)

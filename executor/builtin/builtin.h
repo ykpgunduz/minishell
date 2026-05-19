@@ -19,7 +19,7 @@ int						is_builtin(t_cmd *cmd);
 int						is_env_builtin(t_cmd *cmd);
 void					for_builtin(t_cmd *cmd, t_ms *data);
 void					for_pwd(t_ms *data);
-void					for_env(t_list **envp, t_ms *data);
+void					for_env(t_list **envp, t_ms *data, t_cmd *cmd);
 void					for_echo(t_cmd *cmd, t_ms *data);
 void					for_cd(char **c, t_list **envp, t_ms *data);
 void					env_node(t_list **envp, char *s, char *pwd);

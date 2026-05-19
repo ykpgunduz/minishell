@@ -39,12 +39,18 @@ void	for_pwd(t_ms *data)
 	}
 }
 
-void	for_env(t_list **envp, t_ms *data)
+void	for_env(t_list **envp, t_ms *data, t_cmd *cmd)
 {
 	t_env	*cont;
 	t_list	*tmp;
 
 	tmp = *envp;
+	if (cmd->args[1] != NULL)
+	{
+		data->exit_num = 127;
+		for_err("env", cmd->args[1], "No such file or directory");
+		return ;
+	}
 	while (tmp)
 	{
 		cont = (t_env *)tmp->content;

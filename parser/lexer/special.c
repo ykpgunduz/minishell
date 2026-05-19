@@ -47,7 +47,7 @@ static int	check_consecutive_pipes(char **tokens)
 		{
 			if (!tokens[i + 1] || is_pipe(tokens[i + 1]))
 			{
-				ft_putendl_fd("syntax error near unexpected token `|'", 2);
+				for_err(NULL, NULL, "syntax error near unexpected token `|'");
 				return (0);
 			}
 		}
@@ -67,16 +67,14 @@ static int	check_redirect_args(char **tokens)
 		{
 			if (!tokens[i + 1])
 			{
-				ft_putstr_fd("syntax error near unexpected token `", 2);
-				ft_putstr_fd(tokens[i], 2);
-				ft_putendl_fd("'", 2);
+				for_err("syntax error near unexpected token `|'",
+					NULL, tokens[i]);
 				return (0);
 			}
 			if (is_pipe(tokens[i + 1]) || is_redirect(tokens[i + 1]))
 			{
-				ft_putstr_fd("syntax error near unexpected token `", 2);
-				ft_putstr_fd(tokens[i + 1], 2);
-				ft_putendl_fd("'", 2);
+				for_err("syntax error near unexpected token `|'",
+					NULL, tokens[i + 1]);
 				return (0);
 			}
 		}
@@ -91,7 +89,7 @@ int	validate_syntax(char **tokens)
 		return (1);
 	if (is_pipe(tokens[0]))
 	{
-		ft_putendl_fd("syntax error near unexpected token `|'", 2);
+		for_err(NULL, NULL, "syntax error near unexpected token `|'");
 		return (0);
 	}
 	if (!check_consecutive_pipes(tokens))

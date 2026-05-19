@@ -69,8 +69,9 @@ void	before_path(t_cmd *cmd, t_ms *data)
 	if (is_builtin(cmd))
 	{
 		for_builtin(cmd, data);
+		i = data->exit_num;
 		for_free(data);
-		exit(0);
+		exit(i);
 	}
 }
 

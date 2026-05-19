@@ -91,7 +91,7 @@ static int	fill_tokens(char **tokens, t_lex_state *st)
 		}
 		if (!is_quote_closed(tokens[j]))
 		{
-			ft_putendl_fd("minishell: unclosed quote", 2);
+			for_err(NULL, NULL, "unclosed quote");
 			free_tokens(tokens);
 			return (0);
 		}

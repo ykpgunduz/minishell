@@ -52,12 +52,14 @@ static int	unset_check(char *c)
 	int	i;
 
 	i = 0;
-	if (!c)
+	if (!c || c[i] == '\0')
+		return (2);
+	if (ft_isdigit(c[i]))
 		return (0);
-	while (c[i] && c[i] != '=')
+	while (c[i])
 	{
 		if (!ft_isalnum(c[i]) && c[i] != '_')
-			return (0);
+			return (2);
 		i++;
 	}
 	return (1);
@@ -66,18 +68,26 @@ static int	unset_check(char *c)
 void	for_unset(t_cmd *cmd, t_list **envp, t_ms *data)
 {
 	int		i;
+	int		j;
 	t_list	*tmp;
 
 	i = 1;
 	data->exit_num = 0;
 	while (cmd->args[i])
 	{
-		if (!unset_check(cmd->args[i]))
+		if (cmd->args[i][0] == '-' && cmd->args[i][1] != '\0')
+		{
+			for_err("unset", NULL, "invalid option");
+			data->exit_num = 2;
+			return ;
+		}
+		j = unset_check(cmd->args[i]);
+		if (j == 0)
 		{
 			for_err("unset", cmd->args[i], "not a valid identifier");
 			data->exit_num = 1;
 		}
-		else
+		else if (j == 1)
 		{
 			tmp = *envp;
 			for_remove(tmp, cmd, envp, i);

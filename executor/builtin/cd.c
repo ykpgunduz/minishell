@@ -57,7 +57,7 @@ static void	extra(char *tar, t_list **envp, t_ms *data)
 	old_pwd = getcwd(NULL, 0);
 	if (chdir(tar) == -1)
 	{
-		for_err("cd", NULL, strerror(errno));
+		for_err("cd", tar, strerror(errno));
 		data->exit_num = 1;
 		if (old_pwd)
 			free(old_pwd);
@@ -73,8 +73,16 @@ static void	extra(char *tar, t_list **envp, t_ms *data)
 
 static int	for_check(t_ms *data, char **c, char **tar, t_list **envp)
 {
-	if (c[1] == NULL)
+	if (c[1] == NULL || ft_strcmp(c[1], "~") == 0)
+	{
 		*tar = for_env_value(*envp, "HOME");
+		if (!(*tar))
+		{
+			for_err("cd", NULL, "HOME not set");
+			data->exit_num = 1;
+			return (1);
+		}
+	}
 	if (c[2] != NULL)
 	{
 		for_err("cd", NULL, "too many arguments");
@@ -91,18 +99,22 @@ void	for_cd(char **c, t_list **envp, t_ms *data)
 	tar = NULL;
 	if (for_check(data, c, &tar, envp))
 		return ;
-	else if (c[1] && ft_strcmp(c[1], "-") == 0)
+	if (!tar)
 	{
-		tar = for_env_value(*envp, "OLDPWD");
-		if (!tar)
+		if (c[1] && ft_strcmp(c[1], "-") == 0)
 		{
-			write(2, "minishell: cd: OLDPWD not set\n", 30);
-			data->exit_num = 1;
-			return ;
+			tar = for_env_value(*envp, "OLDPWD");
+			if (!tar)
+			{
+				for_err("cd", NULL, "OLDPWD not set");
+				data->exit_num = 1;
+				return ;
+			}
+			ft_putendl_fd(tar, 1);
 		}
-		ft_putendl_fd(tar, 1);
+		else if (c[1])
+			tar = c[1];
 	}
-	else if (c[1])
-		tar = c[1];
-	extra(tar, envp, data);
+	if (tar)
+		extra(tar, envp, data);
 }

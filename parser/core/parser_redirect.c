@@ -33,7 +33,8 @@ int	handle_output_redirect(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 
 	if (!tokens[*i + 1])
 	{
-		ft_putendl_fd("syntax error: expected filename after '>'", 2);
+		for_err("syntax error", NULL, "expected filename after '>'");
+		data->exit_num = 2;
 		return (-1);
 	}
 	fd = for_outfiles_file(cmd);
@@ -58,7 +59,8 @@ int	handle_append(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 
 	if (!tokens[*i + 1])
 	{
-		ft_putendl_fd("syntax error: expected filename after '>>'", 2);
+		for_err("syntax error", NULL, "expected filename after '>>'");
+		data->exit_num = 2;
 		return (-1);
 	}
 	cmd->type_out = APPEND;
@@ -102,7 +104,8 @@ int	handle_heredoc(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 {
 	if (!tokens[*i + 1])
 	{
-		ft_putendl_fd("syntax error: expected delimiter after '<<'", 2);
+		for_err("syntax error", NULL, "expected filename after '<<'");
+		data->exit_num = 2;
 		return (-1);
 	}
 	cmd->type_in = HEREDOC;

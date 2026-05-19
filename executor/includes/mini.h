@@ -16,6 +16,7 @@
 # include "../types_etc.h"
 # include "../parser/includes/parser.h"
 # include "builtin/builtin.h"
+# include "../get_next_line/get_next_line.h"
 
 extern volatile sig_atomic_t	g_sig;
 
@@ -44,5 +45,6 @@ void		before_path(t_cmd *cmd, t_ms *data);
 void		signals_inter(void);
 void		for_sigint(int sig);
 void		in_child_p(t_cmd *cmd, t_chi *chi, t_ms *data, t_list *tmp);
+char		*making_str(char *paths, char *command);
 
 #endif

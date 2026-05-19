@@ -24,13 +24,13 @@ static void	child_p(t_chi *chi, t_cmd *cmd, t_list *tmp, t_ms *data)
 		for_free(data);
 		exit(1);
 	}
-	else if (write > 1)
+	if (tmp->next)
+		dup2(chi->fd[1], STDOUT_FILENO);
+	if (write > 1)
 	{
 		dup2(write, STDOUT_FILENO);
 		close(write);
 	}
-	else if (tmp->next)
-		dup2(chi->fd[1], STDOUT_FILENO);
 	if (tmp->next)
 	{
 		close(chi->fd[1]);
@@ -40,7 +40,7 @@ static void	child_p(t_chi *chi, t_cmd *cmd, t_list *tmp, t_ms *data)
 
 static void	parent_p(t_chi *chi, t_list *tmp)
 {
-	if (chi->prev_fd != 0)
+	if (chi->prev_fd != -1 && chi->prev_fd != 0)
 		close(chi->prev_fd);
 	if (tmp->next)
 	{
@@ -48,7 +48,7 @@ static void	parent_p(t_chi *chi, t_list *tmp)
 		close(chi->fd[1]);
 	}
 	else
-		chi->prev_fd = 0;
+		chi->prev_fd = -1;
 }
 
 static int	for_pipe(int *fd, t_list *tmp)
@@ -81,7 +81,7 @@ pid_t	pipe_loop(t_ms *data, t_list *tmp)
 	pid_t	pid;
 	t_cmd	*cmd;
 
-	chi.prev_fd = 0;
+	chi.prev_fd = -1;
 	while (tmp)
 	{
 		cmd = (t_cmd *)tmp->content;
