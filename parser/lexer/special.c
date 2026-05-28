@@ -12,17 +12,17 @@
 
 #include "parser.h"
 
-int	is_redirect(char *token)
+int	is_redirect(char **token, int i)
 {
 	if (!token)
 		return (0);
-	if (ft_strncmp(token, "<", 1) == 0 && ft_strlen(token) == 1)
+	if (ft_strncmp(token[i], "<", 1) == 0 && ft_strlen(token[i]) == 1)
 		return (1);
-	if (ft_strncmp(token, "<<", 2) == 0 && ft_strlen(token) == 2)
+	if (ft_strncmp(token[i], "<<", 2) == 0 && ft_strlen(token[i]) == 2)
 		return (1);
-	if (ft_strncmp(token, ">", 1) == 0 && ft_strlen(token) == 1)
+	if (ft_strncmp(token[i], ">", 1) == 0 && ft_strlen(token[i]) == 1)
 		return (1);
-	if (ft_strncmp(token, ">>", 2) == 0 && ft_strlen(token) == 2)
+	if (ft_strncmp(token[i], ">>", 2) == 0 && ft_strlen(token[i]) == 2)
 		return (1);
 	return (0);
 }
@@ -56,25 +56,27 @@ static int	check_consecutive_pipes(char **tokens)
 	return (1);
 }
 
-static int	check_redirect_args(char **tokens)
+static int	check_redirect_args(char **tokens, t_ms *data)
 {
 	int	i;
 
 	i = 0;
 	while (tokens[i])
 	{
-		if (is_redirect(tokens[i]))
+		if (is_redirect(tokens, i))
 		{
 			if (!tokens[i + 1])
 			{
-				for_err("syntax error near unexpected token `|'",
-					NULL, tokens[i]);
+				ft_putendl_fd("minishell: syntax error near unexpected token `newline'", 2);
+				data->exit_num = 2;
 				return (0);
 			}
-			if (is_pipe(tokens[i + 1]) || is_redirect(tokens[i + 1]))
+			if (is_pipe(tokens[i + 1]) || is_redirect(tokens, i + 1))
 			{
-				for_err("syntax error near unexpected token `|'",
-					NULL, tokens[i + 1]);
+				ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+				ft_putstr_fd(tokens[i + 1], 2);
+				ft_putendl_fd("\'", 2);
+				data->exit_num = 2;
 				return (0);
 			}
 		}
@@ -83,7 +85,7 @@ static int	check_redirect_args(char **tokens)
 	return (1);
 }
 
-int	validate_syntax(char **tokens)
+int	validate_syntax(char **tokens, t_ms *data)
 {
 	if (!tokens || !tokens[0])
 		return (1);
@@ -93,8 +95,11 @@ int	validate_syntax(char **tokens)
 		return (0);
 	}
 	if (!check_consecutive_pipes(tokens))
+	{
+		data->exit_num = 2;
 		return (0);
-	if (!check_redirect_args(tokens))
+	}
+	if (!check_redirect_args(tokens, data))
 		return (0);
 	return (1);
 }

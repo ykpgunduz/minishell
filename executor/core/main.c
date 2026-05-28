@@ -103,7 +103,6 @@ int	main(int argc, char **argv, char **enp)
 	}
 	*(data->envp) = for_the_env(enp);
 	data->exit_num = 0;
-	data->heredoc_fd = 0;
 	data->cmds = NULL;
 	data->line = NULL;
 	main_loop(data);

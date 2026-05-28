@@ -81,10 +81,10 @@ void	for_path(t_cmd *cmd, t_ms *data)
 	exit(i);
 }
 
-int	for_infile(t_cmd *cmd, t_ms *data)
+int	for_infile(t_cmd *cmd)
 {
 	if (cmd->type_in == HEREDOC)
-		return (data->heredoc_fd);
+		return (cmd->heredoc_fd);
 	if (cmd->type_in == REDIR_IN)
 	{
 		if (!cmd->infile)

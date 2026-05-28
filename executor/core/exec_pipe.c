@@ -24,13 +24,13 @@ static void	child_p(t_chi *chi, t_cmd *cmd, t_list *tmp, t_ms *data)
 		for_free(data);
 		exit(1);
 	}
-	if (tmp->next)
-		dup2(chi->fd[1], STDOUT_FILENO);
 	if (write > 1)
 	{
 		dup2(write, STDOUT_FILENO);
 		close(write);
 	}
+	else if (tmp->next)
+		dup2(chi->fd[1], STDOUT_FILENO);
 	if (tmp->next)
 	{
 		close(chi->fd[1]);

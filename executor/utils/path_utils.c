@@ -77,3 +77,34 @@ char	*fir_check(char **com, t_ms *data)
 	}
 	return (NULL);
 }
+
+void	heredoc(t_ms *data)
+{
+	t_list	*tmp;
+	t_list	*cle;
+	t_cmd	*cmd;
+	t_cmd	*c;
+
+	tmp = data->cmds;
+	while (tmp)
+	{
+		cmd = (t_cmd *)tmp->content;
+		if (cmd->type_in == HEREDOC)
+		{
+			cmd->heredoc_fd = for_heredoc(cmd, *data->envp, data);
+			if (cmd->heredoc_fd == -3)
+			{
+				cle = data->cmds;
+				while (cle != tmp)
+				{
+					c = (t_cmd *)cle->content;
+					if (c->type_in == HEREDOC && cmd->heredoc_fd > 0)
+						close(cmd->heredoc_fd);
+					cle = cle->next;
+				}
+				return ;
+			}			
+		}
+		tmp = tmp->next;
+	}
+}

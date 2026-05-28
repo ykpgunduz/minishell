@@ -20,7 +20,10 @@ int	dispatch_redirect(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 	if (ft_strncmp(t, "<", 1) == 0 && ft_strlen(t) == 1)
 		return (handle_input_redirect(cmd, tokens, i, data));
 	if (ft_strncmp(t, "<<", 2) == 0 && ft_strlen(t) == 2)
+	{
+
 		return (handle_heredoc(cmd, tokens, i, data));
+	}
 	if (ft_strncmp(t, ">>", 2) == 0 && ft_strlen(t) == 2)
 		return (handle_append(cmd, tokens, i, data));
 	if (ft_strncmp(t, ">", 1) == 0 && ft_strlen(t) == 1)
@@ -36,7 +39,7 @@ static int	parse_command(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 	arg_count = 0;
 	while (tokens[*i] && !is_pipe(tokens[*i]))
 	{
-		if (is_redirect(tokens[*i]))
+		if (is_redirect(tokens, *i))
 		{
 			status = dispatch_redirect(cmd, tokens, i, data);
 			if (status < 0)
@@ -111,7 +114,7 @@ t_list	*parse_input_with_exit(char *input, t_ms *data)
 	tokens = tokenize(input);
 	if (!tokens)
 		return (NULL);
-	if (!validate_syntax(tokens))
+	if (!validate_syntax(tokens, data))
 	{
 		data->exit_num = 2;
 		free_tokens(tokens);

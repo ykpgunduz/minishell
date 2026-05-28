@@ -98,6 +98,6 @@ int	for_heredoc(t_cmd *cmd, t_list *envp, t_ms *data)
 	i = for_h_parent(p, fd);
 	if (i != 0)
 		return (i);
-	data->heredoc_fd = fd[0];
+	cmd->heredoc_fd = fd[0];
 	return (fd[0]);
 }

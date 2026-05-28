@@ -35,7 +35,7 @@ void		for_free(t_ms *data);
 void		for_path(t_cmd *cmd, t_ms *data);
 void		for_check_stat(char *path, t_ms *data);
 pid_t		pipe_loop(t_ms *data, t_list *tmp);
-int			for_infile(t_cmd *cmd, t_ms *data);
+int			for_infile(t_cmd *cmd);
 int			for_outfile(t_cmd *cmd);
 int			for_heredoc(t_cmd *cmd, t_list *envp,
 				t_ms *data);
@@ -46,5 +46,6 @@ void		signals_inter(void);
 void		for_sigint(int sig);
 void		in_child_p(t_cmd *cmd, t_chi *chi, t_ms *data, t_list *tmp);
 char		*making_str(char *paths, char *command);
+void		heredoc(t_ms *data);
 
 #endif

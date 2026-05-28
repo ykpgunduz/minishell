@@ -51,6 +51,7 @@ typedef struct s_cmd
 	t_type		type_out;
 	char		*delimiter;
 	int			expand;
+	int			heredoc_fd;
 }				t_cmd;
 
 typedef struct s_ms
@@ -58,7 +59,6 @@ typedef struct s_ms
 	t_list		**envp;
 	t_list		*cmds;
 	char		*line;
-	int			heredoc_fd;
 	int			exit_num;
 
 }				t_ms;

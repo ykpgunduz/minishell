@@ -63,9 +63,9 @@ int			is_quote(char c);
 int			is_quote_closed(char *token);
 void		skip_spaces(t_lex_state *state);
 void		advance_quote_state(t_lex_state *state);
-int			is_redirect(char *token);
+int			is_redirect(char **token, int i);
 int			is_pipe(char *token);
-int			validate_syntax(char **tokens);
+int			validate_syntax(char **tokens, t_ms *data);
 
 char		*process_quotes(char *token);
 char		*process_quotes_with_env(char *token, t_ms *data);
