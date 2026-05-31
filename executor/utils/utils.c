@@ -12,22 +12,7 @@
 
 #include "mini.h"
 
-void	free_s(char **s)
-{
-	int	i;
-
-	i = 0;
-	if (!s)
-		return ;
-	while (s[i])
-	{
-		free(s[i]);
-		i++;
-	}
-	free(s);
-}
-
-void	for_enoexec(t_cmd *cmd, char *path, char **env, t_ms *data)
+static char	**for_sh(char *path, t_cmd *cmd)
 {
 	int		ac;
 	char	**sh;
@@ -38,7 +23,7 @@ void	for_enoexec(t_cmd *cmd, char *path, char **env, t_ms *data)
 		ac++;
 	sh = malloc(sizeof(char *) * (ac + 2));
 	if (!sh)
-		return ;
+		return (NULL);
 	sh[0] = "sh";
 	sh[1] = path;
 	i = 0;
@@ -48,11 +33,21 @@ void	for_enoexec(t_cmd *cmd, char *path, char **env, t_ms *data)
 		i++;
 	}
 	sh[i + 1] = NULL;
+	return (sh);
+}
+
+void	for_enoexec(t_cmd *cmd, char *path, char **env, t_ms *data)
+{
+	char	**sh;
+
+	sh = for_sh(path, cmd);
 	execve("/bin/sh", sh, env);
 	for_err(cmd->args[0], NULL, strerror(errno));
 	free(sh);
 	free(path);
+	free_s(env);
 	data->exit_num = 126;
+	for_free(data);
 	exit(126);
 }
 

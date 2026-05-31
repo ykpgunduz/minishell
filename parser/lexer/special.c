@@ -67,13 +67,15 @@ static int	check_redirect_args(char **tokens, t_ms *data)
 		{
 			if (!tokens[i + 1])
 			{
-				ft_putendl_fd("minishell: syntax error near unexpected token `newline'", 2);
+				ft_putendl_fd("minishell: syntax error near\
+					unexpected token `newline'", 2);
 				data->exit_num = 2;
 				return (0);
 			}
 			if (is_pipe(tokens[i + 1]) || is_redirect(tokens, i + 1))
 			{
-				ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+				ft_putstr_fd("minishell: syntax error near\
+					unexpected token `", 2);
 				ft_putstr_fd(tokens[i + 1], 2);
 				ft_putendl_fd("\'", 2);
 				data->exit_num = 2;

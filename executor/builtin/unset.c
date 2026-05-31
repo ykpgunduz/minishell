@@ -55,7 +55,7 @@ static int	unset_check(char *c)
 	if (!c || c[i] == '\0')
 		return (2);
 	if (ft_isdigit(c[i]))
-		return (0);
+		return (2);
 	while (c[i])
 	{
 		if (!ft_isalnum(c[i]) && c[i] != '_')
@@ -63,6 +63,17 @@ static int	unset_check(char *c)
 		i++;
 	}
 	return (1);
+}
+
+static int	c_unset(char *arg, t_ms *data)
+{
+	if (arg[0] == '-' && arg[1])
+	{
+		for_err("unset", NULL, "invalid option");
+		data->exit_num = 2;
+		return (1);
+	}
+	return (0);
 }
 
 void	for_unset(t_cmd *cmd, t_list **envp, t_ms *data)
@@ -75,12 +86,8 @@ void	for_unset(t_cmd *cmd, t_list **envp, t_ms *data)
 	data->exit_num = 0;
 	while (cmd->args[i])
 	{
-		if (cmd->args[i][0] == '-' && cmd->args[i][1] != '\0')
-		{
-			for_err("unset", NULL, "invalid option");
-			data->exit_num = 2;
+		if (c_unset(cmd->args[i], data))
 			return ;
-		}
 		j = unset_check(cmd->args[i]);
 		if (j == 0)
 		{

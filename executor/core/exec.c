@@ -34,11 +34,8 @@ static int	for_read(t_cmd *cmd, int prev_fd, t_ms *data)
 		if (prev_fd > 0)
 			close(prev_fd);
 	}
-	else if (prev_fd != -1 && prev_fd != 0)
-	{
-		dup2(prev_fd, STDIN_FILENO);
-		close(prev_fd);
-	}
+	else
+		for_prev(prev_fd);
 	return (0);
 }
 
@@ -53,6 +50,8 @@ void	in_child_p(t_cmd *cmd, t_chi *chi, t_ms *data, t_list *tmp)
 			close(chi->fd[1]);
 			close(chi->fd[0]);
 		}
+		if (chi->prev_fd > 0)
+			close(chi->prev_fd);
 		data->exit_num = 1;
 		for_free(data);
 		exit(1);
@@ -92,6 +91,8 @@ static void	for_env_builtin(t_cmd *cmd, t_ms *data)
 	int	fd;
 	int	out_fd;
 
+	if (cmd->args[0] && ft_strncmp(cmd->args[0], "exit", 5) == 0)
+		return (for_exit(cmd, data));
 	fd = dup(STDOUT_FILENO);
 	out_fd = for_outfile(cmd);
 	if (out_fd == -1)
@@ -115,7 +116,6 @@ void	for_execute(t_ms *data)
 	pid_t	pid;
 	t_cmd	*cmd;
 	t_list	*tmp;
-	
 
 	i = ft_lstsize(data->cmds);
 	cmd = (t_cmd *)data->cmds->content;

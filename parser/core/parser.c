@@ -20,10 +20,7 @@ int	dispatch_redirect(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 	if (ft_strncmp(t, "<", 1) == 0 && ft_strlen(t) == 1)
 		return (handle_input_redirect(cmd, tokens, i, data));
 	if (ft_strncmp(t, "<<", 2) == 0 && ft_strlen(t) == 2)
-	{
-
 		return (handle_heredoc(cmd, tokens, i, data));
-	}
 	if (ft_strncmp(t, ">>", 2) == 0 && ft_strlen(t) == 2)
 		return (handle_append(cmd, tokens, i, data));
 	if (ft_strncmp(t, ">", 1) == 0 && ft_strlen(t) == 1)

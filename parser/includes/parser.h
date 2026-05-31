@@ -69,7 +69,6 @@ int			validate_syntax(char **tokens, t_ms *data);
 
 char		*process_quotes(char *token);
 char		*process_quotes_with_env(char *token, t_ms *data);
-int			is_double_quotes(char *start, char *tar);
 
 t_cmd		*create_cmd(void);
 int			add_command_arg(t_cmd *cmd, char *arg, int *count, t_ms *data);
@@ -90,5 +89,10 @@ int			is_redirect_char(char c);
 void		count_real_len(char *token, int *len);
 int			needs_expansion(char *token);
 char		*remove_quotes(char *token);
+char		*find_part(char *find, t_list *envp, t_ms *data, int *i);
+char		*single_quote(char *t, int *i);
+char		*reg_backslash(char *t, int *j, char *res);
+char		*dq_dollar(char *t, int *j, t_ms *data);
+char		*exp_join(char *r, char *part);
 
 #endif

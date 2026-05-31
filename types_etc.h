@@ -67,7 +67,8 @@ void			free_cmd_content(void *content);
 void			for_err(char *com, char *msg, char *err);
 int				ft_strcmp(const char *s1, const char *s2);
 void			free_s(char **s);
-char			*for_expander(char *s, t_list *envp, t_ms *data);
 char			*for_env_value(t_list *envp, char *s);
+char			*expanderish(char *t, t_ms *data);
+char			*for_h_expander(char *s, t_list *envp, t_ms *data);
 
 #endif

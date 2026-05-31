@@ -80,7 +80,7 @@ int	handle_append(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 	return (1);
 }
 
-static void	setup_heredoc_quote(t_cmd *cmd, char *delimiter, t_ms *data)
+static void	setup_heredoc_quote(t_cmd *cmd, char *delimiter)
 {
 	int	has_quote;
 
@@ -88,7 +88,7 @@ static void	setup_heredoc_quote(t_cmd *cmd, char *delimiter, t_ms *data)
 		|| ft_strchr(delimiter, '\'');
 	if (has_quote)
 	{
-		cmd->delimiter = process_quotes_with_env(delimiter, data);
+		cmd->delimiter = remove_quotes(delimiter);
 		cmd->expand = 0;
 	}
 	else
@@ -109,7 +109,7 @@ int	handle_heredoc(t_cmd *cmd, char **tokens, int *i, t_ms *data)
 		return (-1);
 	}
 	cmd->type_in = HEREDOC;
-	setup_heredoc_quote(cmd, tokens[*i + 1], data);
+	setup_heredoc_quote(cmd, tokens[*i + 1]);
 	if (!cmd->delimiter)
 		return (-1);
 	(*i) += 2;

@@ -20,33 +20,24 @@ static void	h_msg(t_cmd *cmd)
 	ft_putendl_fd("')", 2);
 }
 
-static void	for_h_loop(t_cmd *cmd, t_list *envp, int *fd, t_ms *data)
+static void	for_h_loop(t_cmd *cmd, int *fd, t_ms *data)
 {
 	char	*h_read;
 
 	while (1)
 	{
-		if (isatty(STDIN_FILENO))
-            ft_putstr_fd("> ", STDOUT_FILENO);
-        
-        // get_next_line satırı sonunda \n ile döner
-        h_read = get_next_line(STDIN_FILENO);
-        
-        if (g_sig == SIGINT || !h_read)
-        {
-            if (!h_read && g_sig != SIGINT)
-                h_msg(cmd);
-            free(h_read);
-            break ;
-        }
-
-        // gnl sonunda \n bıraktığı için delimiter kontrolünden önce onu temizlemeliyiz
-        if (h_read[ft_strlen(h_read) - 1] == '\n')
-            h_read[ft_strlen(h_read) - 1] = '\0';
+		h_read = readline("> ");
+		if (g_sig == SIGINT || !h_read)
+		{
+			if (!h_read && g_sig != SIGINT)
+				h_msg(cmd);
+			free(h_read);
+			break ;
+		}
 		if (ft_strcmp(h_read, cmd->delimiter) == 0)
 			return (free(h_read));
 		if (cmd->expand)
-			h_read = for_expander(h_read, envp, data);
+			h_read = for_h_expander(h_read, *(data->envp), data);
 		if (!h_read)
 			break ;
 		ft_putendl_fd(h_read, fd[1]);
@@ -77,7 +68,7 @@ static int	for_h_parent(pid_t p, int *fd)
 	return (0);
 }
 
-int	for_heredoc(t_cmd *cmd, t_list *envp, t_ms *data)
+int	for_heredoc(t_cmd *cmd, t_ms *data)
 {
 	int		fd[2];
 	pid_t	p;
@@ -90,7 +81,7 @@ int	for_heredoc(t_cmd *cmd, t_list *envp, t_ms *data)
 	{
 		signal(SIGINT, SIG_DFL);
 		close(fd[0]);
-		for_h_loop(cmd, envp, fd, data);
+		for_h_loop(cmd, fd, data);
 		close(fd[1]);
 		for_free(data);
 		exit(0);

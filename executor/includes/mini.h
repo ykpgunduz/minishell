@@ -16,7 +16,6 @@
 # include "../types_etc.h"
 # include "../parser/includes/parser.h"
 # include "builtin/builtin.h"
-# include "../get_next_line/get_next_line.h"
 
 extern volatile sig_atomic_t	g_sig;
 
@@ -33,12 +32,10 @@ char		*check_path(char *command, t_ms *data);
 void		for_cont_free(void *cont);
 void		for_free(t_ms *data);
 void		for_path(t_cmd *cmd, t_ms *data);
-void		for_check_stat(char *path, t_ms *data);
 pid_t		pipe_loop(t_ms *data, t_list *tmp);
 int			for_infile(t_cmd *cmd);
 int			for_outfile(t_cmd *cmd);
-int			for_heredoc(t_cmd *cmd, t_list *envp,
-				t_ms *data);
+int			for_heredoc(t_cmd *cmd, t_ms *data);
 void		for_enoexec(t_cmd *cmd, char *path, char **env,
 				t_ms *data);
 void		before_path(t_cmd *cmd, t_ms *data);
@@ -47,5 +44,6 @@ void		for_sigint(int sig);
 void		in_child_p(t_cmd *cmd, t_chi *chi, t_ms *data, t_list *tmp);
 char		*making_str(char *paths, char *command);
 void		heredoc(t_ms *data);
+void		for_prev(int prev_fd);
 
 #endif

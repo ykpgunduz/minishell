@@ -12,7 +12,7 @@
 
 #include "mini.h"
 
-void	for_check_stat(char *path, t_ms *data)
+static void	for_check_stat(char *path, t_ms *data)
 {
 	struct stat	path_info;
 
@@ -47,6 +47,26 @@ static char	*is_in_dir(char **com, t_ms *data)
 	return (NULL);
 }
 
+static char	*fir_path(char **com, t_ms *data)
+{
+	if (access(com[0], F_OK) == -1)
+	{
+		for_err(com[0], NULL, strerror(errno));
+		data->exit_num = 127;
+		for_free(data);
+		exit(127);
+	}
+	for_check_stat(com[0], data);
+	if (access(com[0], X_OK) == -1)
+	{
+		for_err(com[0], NULL, strerror(errno));
+		data->exit_num = 126;
+		for_free(data);
+		exit(126);
+	}
+	return (com[0]);
+}
+
 char	*fir_check(char **com, t_ms *data)
 {
 	char	*true;
@@ -57,54 +77,6 @@ char	*fir_check(char **com, t_ms *data)
 	if (true)
 		return (true);
 	if (com[0][0] == '/' || (com[0][0] == '.' && com[0][1] == '/'))
-	{
-		if (access(com[0], F_OK) == -1)
-		{
-			for_err(com[0], NULL, strerror(errno));
-			data->exit_num = 127;
-			for_free(data);
-			exit(127);
-		}
-		for_check_stat(com[0], data);
-		if (access(com[0], X_OK) == -1)
-		{
-			for_err(com[0], NULL, strerror(errno));
-			data->exit_num = 126;
-			for_free(data);
-			exit(126);
-		}
-		return (com[0]);
-	}
+		return (fir_path(com, data));
 	return (NULL);
-}
-
-void	heredoc(t_ms *data)
-{
-	t_list	*tmp;
-	t_list	*cle;
-	t_cmd	*cmd;
-	t_cmd	*c;
-
-	tmp = data->cmds;
-	while (tmp)
-	{
-		cmd = (t_cmd *)tmp->content;
-		if (cmd->type_in == HEREDOC)
-		{
-			cmd->heredoc_fd = for_heredoc(cmd, *data->envp, data);
-			if (cmd->heredoc_fd == -3)
-			{
-				cle = data->cmds;
-				while (cle != tmp)
-				{
-					c = (t_cmd *)cle->content;
-					if (c->type_in == HEREDOC && cmd->heredoc_fd > 0)
-						close(cmd->heredoc_fd);
-					cle = cle->next;
-				}
-				return ;
-			}			
-		}
-		tmp = tmp->next;
-	}
 }

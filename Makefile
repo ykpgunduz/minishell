@@ -1,6 +1,6 @@
 NAME        = minishell
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -I./executor/get_next_line
+CFLAGS      = -Wall -Wextra -Werror
 LDFLAGS     = -lreadline
 
 LIBFT_SRCS   = executor/libft/ft_atoi.c \
@@ -65,7 +65,9 @@ PARSER_SRCS  = parser/core/parser.c \
                parser/lexer/quote.c \
                parser/lexer/quote_utils.c \
                parser/lexer/special.c \
-               parser/expander/expander.c
+               parser/expander/exp.c\
+               parser/expander/h_exp.c\
+               parser/expander/exp_utils.c
 
 EXEC_SRCS    = executor/core/main.c \
                executor/core/exec.c \
@@ -75,10 +77,9 @@ EXEC_SRCS    = executor/core/main.c \
                executor/utils/path.c \
                executor/utils/path_utils.c \
                executor/utils/utils.c \
+               executor/utils/sec_utils.c\
                executor/utils/signal.c \
-               executor/utils/free.c\
-               executor/get_next_line/get_next_line.c \
-                executor/get_next_line/get_next_line_utils.c \
+               executor/utils/free.c
 
 ALL_SRCS     = $(LIBFT_SRCS) $(EXEC_SRCS) $(BUILTIN_SRCS) $(PARSER_SRCS)
 ALL_OBJS     = $(ALL_SRCS:.c=.o)

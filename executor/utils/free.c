@@ -47,6 +47,8 @@ void	free_cmd_content(void *content)
 		free(cmd->outfile);
 	if (cmd->delimiter)
 		free(cmd->delimiter);
+	if (cmd->heredoc_fd > 0)
+		close(cmd->heredoc_fd);
 	free(cmd);
 }
 

@@ -57,6 +57,13 @@ void	for_new_node(t_list **envp, char *key, char *val)
 	ft_lstadd_back(envp, node);
 }
 
+static int	c_invalid(char *c, t_ms *data)
+{
+	for_err("export", c, "not a valid identifier");
+	data->exit_num = 1;
+	return (0);
+}
+
 int	check(char *c, t_ms *data)
 {
 	int	i;
@@ -69,19 +76,11 @@ int	check(char *c, t_ms *data)
 		return (0);
 	}
 	if (!c || ft_isdigit(c[0]) || c[0] == '=')
-	{
-		for_err("export", c, "not a valid identifier");
-		data->exit_num = 1;
-		return (0);
-	}
+		return (c_invalid(c, data));
 	while (c[i] && c[i] != '=')
 	{
 		if (!ft_isalnum(c[i]) && c[i] != '_')
-		{
-			for_err("export", c, "not a valid identifier");
-			data->exit_num = 1;
-			return (0);
-		}
+			return (c_invalid(c, data));
 		i++;
 	}
 	return (1);

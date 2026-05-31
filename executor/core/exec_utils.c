@@ -76,8 +76,8 @@ void	for_path(t_cmd *cmd, t_ms *data)
 	free(path);
 	for_err(cmd->args[0], NULL, strerror(errno));
 	i = data->exit_num;
-	for_free(data);
 	free_s(env);
+	for_free(data);
 	exit(i);
 }
 

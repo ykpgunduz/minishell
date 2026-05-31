@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expander.c                                         :+:      :+:    :+:   */
+/*   h_exp.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -26,7 +26,7 @@ static char	*for_expander_part(char *left, char *mid, char *right)
 	return (res);
 }
 
-static char	*for_find(char *find, t_list *envp, t_ms *data, int *i)
+char	*find_part(char *find, t_list *envp, t_ms *data, int *i)
 {
 	char	*tmp;
 	char	*val;
@@ -75,7 +75,7 @@ static int	check(char *find)
 	return (0);
 }
 
-char	*for_expander(char *s, t_list *envp, t_ms *data)
+char	*for_h_expander(char *s, t_list *envp, t_ms *data)
 {
 	int		i;
 	char	*find;
@@ -86,19 +86,8 @@ char	*for_expander(char *s, t_list *envp, t_ms *data)
 		find = ft_strchr(s, '$');
 		if (check(find))
 			break ;
-		if (find[1] == '"' || find[1] == '\'')
-		{
-			if (is_double_quotes(s, find))
-				break ;
-			str[0] = ft_substr(s, 0, find - s);
-			str[1] = ft_strdup("");
-			str[2] = ft_strdup(find + 1);
-			free(s);
-			s = for_expander_part(str[0], str[1], str[2]);
-			continue ;
-		}
 		str[0] = ft_substr(s, 0, find - s);
-		str[1] = for_find(find, envp, data, &i);
+		str[1] = find_part(find, envp, data, &i);
 		if (check_exp_free(str, s, 1))
 			return (NULL);
 		str[2] = ft_strdup(find + i);

@@ -44,6 +44,8 @@ char	*remove_quotes(char *token)
 	int		len;
 
 	len = 0;
+	if (!token)
+		return (ft_strdup(""));
 	count_real_len(token, &len);
 	result = malloc(len + 1);
 	if (!result)
@@ -59,7 +61,6 @@ char	*process_quotes(char *token)
 
 char	*process_quotes_with_env(char *token, t_ms *data)
 {
-	char	*removed;
 	char	*expanded;
 
 	if (!token)
@@ -71,28 +72,8 @@ char	*process_quotes_with_env(char *token, t_ms *data)
 	}
 	if (needs_expansion(token))
 	{
-		expanded = for_expander(ft_strdup(token), *(data->envp), data);
-		removed = remove_quotes(expanded);
-		free(expanded);
-		return (removed);
+		expanded = expanderish(token, data);
+		return (expanded);
 	}
 	return (remove_quotes(token));
-}
-
-int	is_double_quotes(char *start, char *tar)
-{
-	int	doub;
-	int	sing;
-
-	doub = 0;
-	sing = 0;
-	while (start < tar)
-	{
-		if (*start == '\'' && !doub)
-			sing = !sing;
-		else if (*start == '"' && !sing)
-			doub = !doub;
-		start++;
-	}
-	return (doub);
 }

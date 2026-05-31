@@ -52,25 +52,17 @@ void	count_real_len(char *token, int *len)
 	while (*token)
 	{
 		if (*token == '\'' && !doub)
-		{
 			sing = !sing;
-			token++;
-		}
 		else if (*token == '"' && !sing)
-		{
 			doub = !doub;
-			token++;
-		}
 		else if (*token == '\\' && !sing && !doub && *(token + 1))
 		{
 			(*len)++;
-			token += 2;
-		}
-		else
-		{
-			(*len)++;
 			token++;
 		}
+		else
+			(*len)++;
+		token++;
 	}
 }
 
