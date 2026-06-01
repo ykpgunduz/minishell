@@ -26,7 +26,10 @@ static int	check_nl(char *arg)
 			return (0);
 		i++;
 	}
-	return (i > 1);
+	if (i > 1)
+		return (1);
+	else 
+		return (0);
 }
 
 void	for_echo(t_cmd *cmd, t_ms *data)

@@ -53,13 +53,13 @@ static int	unset_check(char *c)
 
 	i = 0;
 	if (!c || c[i] == '\0')
-		return (2);
+		return (0);
 	if (ft_isdigit(c[i]))
-		return (2);
+		return (0);
 	while (c[i])
 	{
 		if (!ft_isalnum(c[i]) && c[i] != '_')
-			return (2);
+			return (0);
 		i++;
 	}
 	return (1);
