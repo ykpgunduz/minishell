@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                          :::      :::::::  */
-/*   unset.c                                              :+:      :+:    :+  */
-/*                                                      +:+ +:+         +:+   */
-/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
-/*                                                  +#+#+#+#+#+   +#+         */
-/*   Created: 2026/04/09 09:44:36 by zkarali             #+#    #+#           */
-/*   Updated: 2026/04/15 13:02:48 by zkarali            ###   ########.fr     */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/09 09:44:36 by zkarali           #+#    #+#             */
+/*   Updated: 2026/06/02 08:41:03 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,24 +47,6 @@ static void	for_remove(t_list *tmp, t_cmd *cmd, t_list **envp, int i)
 	}
 }
 
-static int	unset_check(char *c)
-{
-	int	i;
-
-	i = 0;
-	if (!c || c[i] == '\0')
-		return (0);
-	if (ft_isdigit(c[i]))
-		return (0);
-	while (c[i])
-	{
-		if (!ft_isalnum(c[i]) && c[i] != '_')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
 static int	c_unset(char *arg, t_ms *data)
 {
 	if (arg[0] == '-' && arg[1])
@@ -79,7 +61,6 @@ static int	c_unset(char *arg, t_ms *data)
 void	for_unset(t_cmd *cmd, t_list **envp, t_ms *data)
 {
 	int		i;
-	int		j;
 	t_list	*tmp;
 
 	i = 1;
@@ -88,17 +69,8 @@ void	for_unset(t_cmd *cmd, t_list **envp, t_ms *data)
 	{
 		if (c_unset(cmd->args[i], data))
 			return ;
-		j = unset_check(cmd->args[i]);
-		if (j == 0)
-		{
-			for_err("unset", cmd->args[i], "not a valid identifier");
-			data->exit_num = 1;
-		}
-		else if (j == 1)
-		{
-			tmp = *envp;
-			for_remove(tmp, cmd, envp, i);
-		}
+		tmp = *envp;
+		for_remove(tmp, cmd, envp, i);
 		i++;
 	}
 }

@@ -53,6 +53,7 @@ BUILTIN_SRCS = executor/builtin/the.c \
                executor/builtin/cd.c \
                executor/builtin/export.c \
                executor/builtin/export_utils.c \
+               executor/builtin/export_print.c\
                executor/builtin/unset.c \
                executor/builtin/exit.c
 

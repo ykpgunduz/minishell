@@ -1,71 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                          :::      :::::::  */
-/*   export.c                                             :+:      :+:    :+  */
-/*                                                      +:+ +:+         +:+   */
-/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
-/*                                                  +#+#+#+#+#+   +#+         */
-/*   Created: 2026/04/01 16:25:48 by zkarali             #+#    #+#           */
-/*   Updated: 2026/04/20 11:02:30 by zkarali            ###   ########.fr     */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/01 16:25:48 by zkarali           #+#    #+#             */
+/*   Updated: 2026/06/02 09:17:44 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-static char	**for_loop(t_list *tmp, char **t_tmp)
+static char	*for_key(t_list *envp, char *s)
 {
+	t_list	*tmp;
 	t_env	*cont;
-	char	*s1;
-	char	*s2;
-	int		i;
 
-	i = 0;
+	tmp = envp;
 	while (tmp)
 	{
 		cont = (t_env *)tmp->content;
-		if (cont->value == NULL)
-			t_tmp[i] = ft_strdup(cont->key);
-		else
-		{
-			s1 = ft_strjoin(cont->key, "=\"");
-			s2 = ft_strjoin(s1, cont->value);
-			t_tmp[i] = ft_strjoin(s2, "\"");
-			free(s1);
-			free(s2);
-		}
-		i++;
+		if (ft_strcmp(cont->key, s) == 0)
+			return (cont->key);
 		tmp = tmp->next;
 	}
-	t_tmp[i] = NULL;
-	sort(t_tmp, i);
-	return (t_tmp);
+	return (NULL);
 }
 
-static void	if_null(t_list **envp)
+static void	extra(t_list **envp, char *key, char *val)
 {
-	t_list	*tmp;
-	char	**t_tmp;
-	int		i;
-
-	tmp = *envp;
-	t_tmp = malloc(sizeof(char *) * (ft_lstsize(*envp) + 1));
-	if (!t_tmp)
-		return ;
-	t_tmp = for_loop(tmp, t_tmp);
-	i = 0;
-	while (t_tmp[i])
+	if (for_key(*envp, key))
 	{
-		printf("declare -x %s\n", t_tmp[i]);
-		i++;
-	}
-	free_s(t_tmp);
-}
-
-static void	extra(t_list **envp, char *s, char *key, char *val)
-{
-	if (for_env_value(*envp, key))
-	{
-		if (s)
+		if (key)
 			env_node(envp, key, val);
 	}
 	else
@@ -87,7 +54,7 @@ static void	for_s(char *c, t_list **envp, char *s)
 		key = ft_strdup(c);
 		val = NULL;
 	}
-	extra(envp, s, key, val);
+	extra(envp, key, val);
 	free(key);
 	if (val)
 		free(val);

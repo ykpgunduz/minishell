@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                          :::      :::::::  */
-/*   exec3.c                                              :+:      :+:    :+  */
-/*                                                      +:+ +:+         +:+   */
-/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
-/*                                                  +#+#+#+#+#+   +#+         */
-/*   Created: 2026/04/05 12:24:33 by zkarali             #+#    #+#           */
-/*   Updated: 2026/04/20 20:33:30 by zkarali            ###   ########.fr     */
+/*                                                        :::      ::::::::   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/05 12:24:33 by zkarali           #+#    #+#             */
+/*   Updated: 2026/06/02 08:42:40 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ static char	*for_paths_path(t_cmd *cmd, t_ms *data, char *path)
 		path = check_path(cmd->args[0], data);
 		if (!path || !*path)
 		{
-			for_err(cmd->args[0], NULL, "command not found");
+			ft_putstr_fd(cmd->args[0], 2);
+			ft_putendl_fd(": command not found", 2);
 			data->exit_num = 127;
 			for_free(data);
 			exit(127);

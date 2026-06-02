@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                          :::      :::::::  */
-/*   free.c                                               :+:      :+:    :+  */
-/*                                                      +:+ +:+         +:+   */
-/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
-/*                                                  +#+#+#+#+#+   +#+         */
-/*   Created: 2026/04/10 07:32:38 by zkarali             #+#    #+#           */
-/*   Updated: 2026/04/12 03:50:01 by zkarali            ###   ########.fr     */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/10 07:32:38 by zkarali           #+#    #+#             */
+/*   Updated: 2026/06/02 10:03:24 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	for_free(t_ms *data)
 	if (data->line)
 		free(data->line);
 	free(data);
-	rl_free_line_state();
 	rl_cleanup_after_signal();
+	rl_free_line_state();
 	rl_clear_history();
 }

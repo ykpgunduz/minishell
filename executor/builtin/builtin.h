@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                          :::      :::::::  */
-/*   builtin.h                                            :+:      :+:    :+  */
-/*                                                      +:+ +:+         +:+   */
-/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
-/*                                                  +#+#+#+#+#+   +#+         */
-/*   Created: 2026/04/05 14:27:07 by zkarali             #+#    #+#           */
-/*   Updated: 2026/04/20 14:59:25 by zkarali            ###   ########.fr     */
+/*                                                        :::      ::::::::   */
+/*   builtin.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/05 14:27:07 by zkarali           #+#    #+#             */
+/*   Updated: 2026/06/02 10:08:05 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,6 @@ void					for_unset(t_cmd *cmd, t_list **envp, t_ms *data);
 void					for_exit(t_cmd *cmd, t_ms *data);
 void					for_free(t_ms *data);
 void					del_node(t_list *node);
+void					if_null(t_list **envp);
 
 #endif
