@@ -6,7 +6,7 @@
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/01 14:57:06 by zkarali           #+#    #+#             */
-/*   Updated: 2026/06/01 14:57:07 by zkarali          ###   ########.fr       */
+/*   Updated: 2026/06/02 12:40:59 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,19 @@ char	*single_quote(char *t, int *i)
 	r = ft_substr(t, *i, j - *i);
 	*i = j;
 	return (r);
+}
+
+char	*finds_part(char *tmp, char *val)
+{
+	if (tmp[1])
+	{
+		val = ft_substr(tmp, 1, ft_strlen(tmp) - 1);
+		free(tmp);
+		return (val);
+	}
+	else
+	{
+		free(tmp);
+		return (ft_strdup(""));
+	}
 }

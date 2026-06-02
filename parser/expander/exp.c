@@ -6,7 +6,7 @@
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/01 14:57:11 by zkarali           #+#    #+#             */
-/*   Updated: 2026/06/02 11:31:09 by zkarali          ###   ########.fr       */
+/*   Updated: 2026/06/02 11:42:07 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,6 @@ char	*expanderish(char *t, t_ms *data)
 			r = exp_join(r, handle_quote(t, &i, data));
 		else if (t[i] == '$')
 		{
-			if (t[i + 1] && t[i + 1] == '*')
-				i += 2;
 			r = exp_join(r, handle_dollar(t, &i, data));
 			continue ;
 		}

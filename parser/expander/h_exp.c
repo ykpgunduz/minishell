@@ -6,7 +6,7 @@
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 12:23:59 by zkarali           #+#    #+#             */
-/*   Updated: 2026/06/02 11:22:16 by zkarali          ###   ########.fr       */
+/*   Updated: 2026/06/02 12:38:02 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ char	*find_part(char *find, t_list *envp, t_ms *data, int *i)
 		(*i)++;
 	tmp = ft_substr(find, 1, *i - 1);
 	val = for_env_value(envp, tmp);
-	free(tmp);
 	if (!val)
-		return (ft_strdup(""));
+		return (finds_part(tmp, val));
+	free(tmp);
 	return (ft_strdup(val));
 }
 
@@ -70,7 +70,7 @@ static int	check(char *find)
 {
 	if (!find || !find[1])
 		return (1);
-	if (ft_isspace(find[1]) || ft_isdigit(find[1]))
+	if (ft_isspace(find[1]))
 		return (1);
 	return (0);
 }
