@@ -6,7 +6,7 @@
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 05:52:46 by zkarali           #+#    #+#             */
-/*   Updated: 2026/06/02 10:37:58 by zkarali          ###   ########.fr       */
+/*   Updated: 2026/06/02 13:49:37 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void	for_sigint(int sig)
 	(void)sig;
 	g_sig = SIGINT;
 	write(1, "\n", 1);
-	rl_replace_line("", 0);
 	rl_on_new_line();
+	rl_replace_line("", 0);
 	rl_redisplay();
 }
 

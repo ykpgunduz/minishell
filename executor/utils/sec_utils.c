@@ -6,7 +6,7 @@
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/01 14:57:31 by zkarali           #+#    #+#             */
-/*   Updated: 2026/06/01 14:57:32 by zkarali          ###   ########.fr       */
+/*   Updated: 2026/06/02 14:14:40 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,18 @@ void	free_s(char **s)
 		i++;
 	}
 	free(s);
+}
+
+void	for_wait_exit(t_ms *data, int status)
+{
+	if (WIFEXITED(status))
+		data->exit_num = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		data->exit_num = 128 + WTERMSIG(status);
+		if (WTERMSIG(status) == SIGQUIT)
+			write(2, "Quit (core dumped)\n", 19);
+		else if (WTERMSIG(status) == SIGSEGV)
+			write(2, "Segmentation fault (core dumped)\n", 34);
+	}
 }

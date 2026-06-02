@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                          :::      :::::::  */
-/*   heredoc.c                                            :+:      :+:    :+  */
-/*                                                      +:+ +:+         +:+   */
-/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
-/*                                                  +#+#+#+#+#+   +#+         */
-/*   Created: 2026/04/10 21:46:17 by zkarali             #+#    #+#           */
-/*   Updated: 2026/04/18 02:43:38 by zkarali            ###   ########.fr     */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/10 21:46:17 by zkarali           #+#    #+#             */
+/*   Updated: 2026/06/02 14:10:07 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,14 @@ static void	for_h_loop(t_cmd *cmd, int *fd, t_ms *data)
 	while (1)
 	{
 		h_read = readline("> ");
-		if (g_sig == SIGINT || !h_read)
+		if (g_sig == SIGINT)
 		{
-			if (!h_read && g_sig != SIGINT)
-				h_msg(cmd);
 			free(h_read);
+			break ;
+		}
+		if (!h_read)
+		{
+			h_msg(cmd);
 			break ;
 		}
 		if (ft_strcmp(h_read, cmd->delimiter) == 0)
@@ -57,11 +60,12 @@ static int	for_h_parent(pid_t p, int *fd)
 	}
 	close(fd[1]);
 	waitpid(p, &s, 0);
-	signals_inter();
 	if (WIFSIGNALED(s) && WTERMSIG(s) == SIGINT)
 	{
 		close(fd[0]);
 		write(1, "\n", 1);
+		rl_on_new_line();
+        rl_replace_line("", 0);
 		g_sig = SIGINT;
 		return (-3);
 	}
@@ -76,6 +80,7 @@ int	for_heredoc(t_cmd *cmd, t_ms *data)
 
 	if (pipe(fd) == -1)
 		return (-1);
+	signal(SIGINT, SIG_IGN);
 	p = fork();
 	if (p == 0)
 	{
@@ -87,6 +92,7 @@ int	for_heredoc(t_cmd *cmd, t_ms *data)
 		exit(0);
 	}
 	i = for_h_parent(p, fd);
+	signals_inter();
 	if (i != 0)
 		return (i);
 	cmd->heredoc_fd = fd[0];

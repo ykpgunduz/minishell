@@ -6,7 +6,7 @@
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 18:06:45 by zkarali           #+#    #+#             */
-/*   Updated: 2026/06/01 15:49:31 by zkarali          ###   ########.fr       */
+/*   Updated: 2026/06/02 14:14:33 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,27 +62,24 @@ static void	for_pipes_exit(pid_t p, t_ms *data)
 {
 	int		status;
 	pid_t	cur;
+	int		i;
 
+	i = 0;
 	while (1)
 	{
 		cur = wait(&status);
 		if (cur <= 0)
 			break ;
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+			i = 1;
 		if (cur == p)
-		{
-			if (WIFEXITED(status))
-				data->exit_num = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-			{
-				data->exit_num = 128 + WTERMSIG(status);
-				if (WTERMSIG(status) == SIGQUIT)
-					write(2, "Quit (core dumped)\n", 19);
-				else if (WTERMSIG(status) == SIGINT)
-					write(2, "\n", 1);
-				else if (WTERMSIG(status) == SIGSEGV)
-					write(2, "Segmentation fault (core dumped)\n", 34);
-			}
-		}
+			for_wait_exit(data, status);
+	}
+	if (i)
+	{
+		write(2, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
 	}
 }
 

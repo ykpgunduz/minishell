@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                          :::      :::::::  */
-/*   mini.h                                               :+:      :+:    :+  */
-/*                                                      +:+ +:+         +:+   */
-/*   By: zkarali <zkarali@student.42istanbul.com.tr>  +#+  +:+       +#+      */
-/*                                                  +#+#+#+#+#+   +#+         */
-/*   Created: 2026/03/27 20:00:17 by zkarali             #+#    #+#           */
-/*   Updated: 2026/04/11 08:56:14 by zkarali            ###   ########.fr     */
+/*                                                        :::      ::::::::   */
+/*   mini.h                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/27 20:00:17 by zkarali           #+#    #+#             */
+/*   Updated: 2026/06/02 14:14:53 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,6 @@ void		in_child_p(t_cmd *cmd, t_chi *chi, t_ms *data, t_list *tmp);
 char		*making_str(char *paths, char *command);
 void		heredoc(t_ms *data);
 void		for_prev(int prev_fd);
+void		for_wait_exit(t_ms *data, int status);
 
 #endif

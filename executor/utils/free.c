@@ -6,7 +6,7 @@
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 07:32:38 by zkarali           #+#    #+#             */
-/*   Updated: 2026/06/02 11:34:26 by zkarali          ###   ########.fr       */
+/*   Updated: 2026/06/02 13:35:15 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void	for_free(t_ms *data)
 	if (data->line)
 		free(data->line);
 	free(data);
-	rl_free_line_state();
+	clear_history();
 	rl_cleanup_after_signal();
-	rl_clear_history();
 }
