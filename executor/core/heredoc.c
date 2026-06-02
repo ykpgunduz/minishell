@@ -6,7 +6,7 @@
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 21:46:17 by zkarali           #+#    #+#             */
-/*   Updated: 2026/06/02 14:10:07 by zkarali          ###   ########.fr       */
+/*   Updated: 2026/06/02 14:58:48 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static int	for_h_parent(pid_t p, int *fd)
 		close(fd[0]);
 		write(1, "\n", 1);
 		rl_on_new_line();
-        rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		g_sig = SIGINT;
 		return (-3);
 	}
