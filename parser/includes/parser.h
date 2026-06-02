@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                           :::      ::::::: */
-/*   parser.h                                              :+:      :+:    :+ */
-/*                                                       +:+ +:+         +:+  */
-/*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
-/*                                                   +#+#+#+#+#+   +#+        */
-/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
-/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/14 09:25:19 by yagunduz          #+#    #+#             */
+/*   Updated: 2026/06/02 12:48:23 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,5 +94,6 @@ char		*single_quote(char *t, int *i);
 char		*reg_backslash(char *t, int *j, char *res);
 char		*dq_dollar(char *t, int *j, t_ms *data);
 char		*exp_join(char *r, char *part);
+char		*finds_part(char *tmp, char *val);
 
 #endif
