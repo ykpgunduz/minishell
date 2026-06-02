@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                           :::      ::::::: */
-/*   special.c                                             :+:      :+:    :+ */
-/*                                                       +:+ +:+         +:+  */
-/*   By: yagunduz <yagunduz@student.42istanbul.com.tr> +#+  +:+       +#+     */
-/*                                                   +#+#+#+#+#+   +#+        */
-/*   Created: 2026/03/14 09:25:19 by yagunduz             #+#    #+#          */
-/*   Updated: 2026/04/23 12:48:48 by yagunduz            ###   ########.fr    */
+/*                                                        :::      ::::::::   */
+/*   special.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/14 09:25:19 by yagunduz          #+#    #+#             */
+/*   Updated: 2026/06/02 11:11:32 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,14 +68,14 @@ static int	check_redirect_args(char **tokens, t_ms *data)
 			if (!tokens[i + 1])
 			{
 				ft_putendl_fd("minishell: syntax error near\
-					unexpected token `newline'", 2);
+ unexpected token `newline'", 2);
 				data->exit_num = 2;
 				return (0);
 			}
 			if (is_pipe(tokens[i + 1]) || is_redirect(tokens, i + 1))
 			{
 				ft_putstr_fd("minishell: syntax error near\
-					unexpected token `", 2);
+ unexpected token `", 2);
 				ft_putstr_fd(tokens[i + 1], 2);
 				ft_putendl_fd("\'", 2);
 				data->exit_num = 2;
