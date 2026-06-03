@@ -6,7 +6,7 @@
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 17:36:32 by zkarali           #+#    #+#             */
-/*   Updated: 2026/06/02 10:31:12 by zkarali          ###   ########.fr       */
+/*   Updated: 2026/06/03 09:53:35 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,27 @@
 static void	for_contents(char **envp, t_env *cont)
 {
 	char	*s;
+	int		i;
 
 	s = ft_strchr(*envp, '=');
 	if (s)
 	{
 		cont->key = ft_substr(*envp, 0, s - *envp);
 		cont->value = ft_strdup(s + 1);
+		if (ft_strncmp(cont->key, "SHLVL", 5) == 0)
+		{
+			if (cont->value)
+			{
+				i = ft_atoi(cont->value);
+				i++;
+				cont->value = ft_strdup(ft_itoa(i));
+			}
+			else
+			{
+				i = 1;
+				cont->value = ft_strdup(ft_itoa(i));
+			}
+		}
 	}
 	else
 	{

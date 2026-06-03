@@ -6,7 +6,7 @@
 /*   By: zkarali <zkarali@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/01 14:57:06 by zkarali           #+#    #+#             */
-/*   Updated: 2026/06/02 12:40:59 by zkarali          ###   ########.fr       */
+/*   Updated: 2026/06/02 18:16:29 by zkarali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,13 +65,18 @@ char	*finds_part(char *tmp, char *val)
 {
 	if (tmp[1])
 	{
-		val = ft_substr(tmp, 1, ft_strlen(tmp) - 1);
-		free(tmp);
-		return (val);
+		if (ft_strncmp(tmp, "EMPTY", 5) == 0)
+		{
+			free(tmp);
+			return (ft_strdup(""));
+		}
+		else if (ft_isdigit(tmp[0]))
+		{
+			val = ft_substr(tmp, 1, ft_strlen(tmp) - 1);
+			free(tmp);
+			return (val);
+		}
 	}
-	else
-	{
-		free(tmp);
-		return (ft_strdup(""));
-	}
+	free(tmp);
+	return (ft_strdup(val));
 }
